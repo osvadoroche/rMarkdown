@@ -1,0 +1,618 @@
+---
+output: 
+  html_document:
+    theme: journal
+    highlight: null
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{css, echo=FALSE}
+
+/*Este Codigo se utiliza unicamente para dar estilo al documento*/
+
+h1,h2,h3,h4{
+    font-size:18px;
+    font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
+    line-height:2;
+}
+
+h1 {
+    text-align: center;
+}
+
+h4{
+    text-align:center;
+    font-weight: normal;
+    line-height:1;
+}
+    
+p, li, li > a, p > a{
+    font-size:18px;
+    font-family: 'Times New Roman', Times, serif;
+    line-height: 2;
+    color:Black;
+}
+ 
+p{
+  text-indent:36.02px;
+}
+
+#div {
+#      width:612px;
+#}
+.grupos > h1{
+  line-height:1;
+}
+
+.archivos > ul > li > p{
+    text-indent:0;
+}
+
+```
+
+# Universidad de El Salvador 
+# Facultad de Ciencias Económicas
+# Escuela de Economía
+
+<center>
+![](https://www.ues.edu.sv/storage/app/media/minerva2.png){width=15%}
+</center>
+
+# Tema
+
+#### Determinantes del crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017
+
+# Docente
+
+#### Carlos Ademir Perez Alas
+
+# Materia
+
+#### Econometría
+ 
+# Integrantes
+
+```{r echo=F, message=FALSE, warning=FALSE}
+library(flextable)
+library(dplyr)
+Nombres <- c("Cruz Alfaro Brayan Josué", 
+             "Novoa Rubio Fernando Enrique", 
+            "Arita Polanco Brian Guadalupe", 
+             "Roche Romero Osvaldo Enrique", 
+             "Velásquez González José Roberto")
+Carnet <- c("CA17113","NR18001","AP18007","RR18105","VG16027")
+Integrantes <- cbind(Nombres,Carnet) %>% as.data.frame()
+Tabla_Integrantes <- flextable(head(Integrantes),
+                               col_keys = c("Nombres", "Carnet"))
+
+Tabla_Integrantes %>% 
+  width(width = 2.5) %>%
+  align_text_col(align =  "justify", header =  TRUE , footer =  TRUE ) %>% 
+  bold(bold = TRUE, part = "header") %>% 
+  align (align =  "center" , part =  "header") %>% 
+  align (j =  2, align =  "center" , part =  "body" ) %>% 
+  width (j =  2 , width = 1.5 ) %>% 
+  bg (i =  1 , bg = "#eb6864", part =  "header") %>% 
+  color (i = 1, color = "#ffffff", part =  "header" )
+```
+
+#### **Grupo Teórico 3** 
+#### **Grupo de Clase 6**
+
+\newpage
+
+# Contenido
+
+1.  [Introducción](#id1)
+2.  [Justificación](#id2)
+3.  [Objetivos](#id3)
+
+3.1.  [Objetivo General](#id3.1)
+
+3.2.  [Objetivos Específicos](#id3.2)
+
+4.  [Planteamiento del Problema](#id4)
+5.  [Hipótesis](#id5)
+
+5.1.  [Hipótesis General](#id5.1)
+
+5.2.  [Hipótesis Especificas](#id5.2)
+
+6.  [Marco Teórico](#id6)
+
+6.1.  [Antecedentes](#id6.1)
+
+7.  [Marco referencial](#id7)
+
+7.1.  [Estudios de las Exportaciones de El salvador](#id7.1)
+
+7.1.1.  [Indicadores de posición](#id7.1.1)
+  
+7.1.2.  [Indicadores de dinamismo comercial](#id7.1.2)
+  
+7.1.3.  [Indicadores de integración regional](#id7.1.3)
+  
+7.2.  [Otros modelos y teorías](#id7.2)
+ 
+7.2.1  [Modelos clásicos de equilibro general sobre el comercio](#id7.2.1)
+  
+7.2.2.  [Modelos basados en la cadena de suministro](#id7.2.2)
+  
+7.3.  [Marco conceptual](#id7.3)
+ 
+8.  [Especificación](#id8)
+
+8.1.  [Planteamiento Teórico del Fenómeno Económico](#id8.1)
+ 
+8.1.1.  [Variables endógenas y exógenas](#id8.1.1)
+   
+8.2.  [Relación funcional entre variables](#id8.2)
+  
+8.3.  [Especificación del modelo matemático y estadístico](#id8.3)
+  
+8.3.1.  [Modelo matemático](#id8.3.1)
+   
+8.3.2.  [Modelo estadístico](#id8.3.2)
+  
+9.  [Evidencia Empírica del Fenómeno Económico](#id9)
+10.  [Bibliografía](#id10)
+11. [Anexos](#id11)
+
+\newpage
+
+<div id="id1"/>
+# 1. Introducción
+
+Una exportación es básicamente todo bien y/o servicio legítimo que el país productor o emisor (el exportador) envíe como mercancía a un tercero (importador), para su compra o utilización. El papel de las exportaciones en la producción de un país es esencial, un país puede generar producción a nivel nacional y venderla en su propio territorio, pero también puede buscar compradores fuera de sus fronteras. En la vida moderna cada país ha elaborado sus legislaciones de acuerdo a sus propios intereses y necesidades. Es una de las principales fuentes de ingresos para un país.
+
+Un modelo econométrico es un modelo estadístico o matemático que representa la relación entre dos o más variables. Su utilización permite hacer estimaciones acerca del efecto de una variable sobre otra y/o hacer predicciones acerca del valor futuro de las variables.
+
+El Salvador en materia de comercio exterior, se distingue por tener un alto grado de apertura; es decir, el porcentaje de sus exportaciones e importaciones son altos con respecto al PIB. Para el presente trabajo se pretende determinar a través de un modelo econométrico la relación de las principales variables con respecto al comportamiento de las exportaciones de camisas de punto de algodón en El Salvador tomando como principal socio comercial el país de Estados Unidos.
+
+\newpage
+
+<div id="id2"/>
+# 2. Justificación
+
+En El Salvador, las exportaciones se han llevado a cabo desde el siglo XVI con productos agrícolas como el añil, algodón y café, siendo este último el más representativo en el modelo agroexportador años más tarde, estos constituían la base de la economía salvadoreña y permitían al país abrirse al mundo comercial.
+
+En los últimos años, las exportaciones totales de El Salvador representan en promedio un 23% del PIB y únicamente el 5% de estas proviene de las industrias maquiladoras, sin embargo, uno de los productos que más se exportan hacia su principal socio comercial; los Estados Unidos, son las camisas de punto de algodón para hombre y para mujer que pertenecen a este mismo rubro.
+
+Por esto mismo, resulta interesante estimar las exportaciones conjuntas de estos productos aplicando métodos econométricos como el Modelo Clásico de Regresión Lineal Múltiple y aportar de alguna manera al estudio de la situación económica de El Salvador en el periodo de 2002 a 2017.
+
+
+
+<div id="id3"/>
+# 3. Objetivos
+
+<div id="id3.1"/>
+## Objetivo General
+
+Determinar si el índice de precios a las exportaciones, la tasa de apertura, el PIB per cápita, la producción industrial y las importaciones de capital influyen en el crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017.
+ 
+
+<div id="id3.2"/>
+## Objetivos Específicos
+
+* Evaluar cuál de los regresores del estudio es más determinante en el crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017.
+
+* Calcular la autocorrelación entre las exportaciones de camisas de punto de algodón y el índice de precios a las exportaciones, la tasa de apertura, el PIB per cápita, la producción industrial y las importaciones de capital.
+
+* Evaluar el desempeño predictivo del modelo a estimar sobre las exportaciones de camisas de punto hacia los Estados Unidos durante los años de 2002 al 2017.
+
+* Estimar el comportamiento de los determinantes de las exportaciones mensuales de camisas de punto de algodón de El Salvador a Estados Unidos entre los años 2002 y 2017.
+
+<div id="id4"/>
+# 4. Planteamiento del Problema
+
+Las exportaciones e importaciones han sido de gran importancia para los países desde hace siglos, permitiendo el desarrollo de los mismos y moldeando la cultura de cada región, en la actualidad esto sigue vigente; los mercados están fuertemente globalizados, las relaciones económicas con el resto del mundo son indispensables para las economías de los países y para El Salvador no es la excepción dado que nuestro país tiene una fuerte dependencia con el comercio exterior, situación que puede observarse en la balanza de pagos. Resulta de suma importancia el estudio de los ingresos recibidos en el país por medio de las relaciones económicas internacionales, por ello en nuestro estudio nos enfocamos en las exportaciones de bienes y servicios.
+
+
+En la última década las exportaciones de nuestro país han fluctuado entre el 21% y el 26% respecto al PIB; El Salvador ofrece una gran variedad de productos y servicios al resto del mundo, entre los sectores más destacados a nivel de exportación tenemos: Manufacturas diversas, agroindustria, alimentos y bebidas, y servicios. Dentro de las manufacturas tenemos que los productos de confección son el principal sector de las exportaciones salvadoreñas y entre esos productos de confección, destaca la categoría de camisetas de algodón de punto.
+
+Históricamente el principal socio comercial de El Salvador es Estados Unidos, seguido por Honduras, Guatemala, Nicaragua y Costa Rica que en conjunto demandaron el 85% del total exportado para el año 2018.
+
+Existen diversos determinantes de las exportaciones, estos pueden ser variables nacionales o extranjeras, en el presente estudio se han escogido las siguientes: aranceles, índice de precios de las exportaciones, tasa de apertura comercial, PIB per cápita e índice de producción industrial. 
+
+En virtud de lo anterior expuesto, se procede a la formulación del problema:
+
+¿El índice de precios a las exportaciones, la tasa de apertura, el PIB per cápita, la producción industrial y las importaciones de capital determinan de forma significativa el crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017?
+
+<div id="id5"/>
+# 5. Hipótesis
+
+<div id="id5.1"/>
+## Hipótesis General
+
+H0: Las exportaciones de camisas de punto de algodón no son afectadas por determinantes como el índice de precios a las exportaciones, el PIB per cápita (EE. UU), las importaciones de capital, la tasa de apertura y la producción industrial durante el periodo comprendido desde 2002 hasta 2017.
+
+H1: Las exportaciones de camisas de punto de algodón son afectadas por determinantes como el índice de precios a las exportaciones, el PIB per cápita (EE. UU), las importaciones de capital, la tasa de apertura y la producción industrial durante el periodo comprendido desde 2002 hasta 2017.
+
+<div id="id5.2"/>
+## Hipótesis Especificas
+
+* Ho: El índice de precios a las exportaciones de El Salvador no tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* H1: El índice de precios a las exportaciones de El Salvador tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* Ho: La tasa de apertura de Estados Unidos no tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* H1: La tasa de apertura de Estados Unidos tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+
+* Ho: El PIB per cápita de Estado Unidos no tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* H1: El PIB per cápita de Estado Unidos tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* Ho: El índice de producción industrial de El Salvador no tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* H1: El índice de producción industrial de El Salvador tiene una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* Ho: Las importaciones en bienes de Capital hacia El Salvador no tienen una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+* H1: Las importaciones en bienes de Capital hacia El Salvador tienen una relación lineal parcial con las exportaciones de camisas de punto de algodón durante el periodo comprendido desde 2002 hasta 2017.
+
+
+
+<div id="id6"/>
+# 6. Marco Teórico
+
+<div id="id6.1"/>
+## Antecedentes
+
+El cultivo del añil en El Salvador constituía una actividad económica muy importante siendo esta de origen español, mientras que la producción de Bálsamo y cacao era meramente indígena. Desde el siglo XVI el añil se esparció en toda la región centroamericana, para años más tarde convertirse en el producto más exportado en dicha región.
+
+En los años de mayor exportación se envió aproximadamente 500 mil libras de añil desde Centroamérica hasta Europa, durante el siglo XVII esta cantidad se duplicó. Solo San Salvador en 1807 producía 486,990 libras de añil y esto representaba el 77.71% de las exportaciones que hacía toda la región centroamericana en esa época. La producción y por ende las exportaciones siguieron creciendo hasta representar un 86.30% en tan solo un año. Pese a que la producción de añil era la actividad más viable para exportar en San Salvador, esta era afectada por las múltiples plagas y por la competencia de otros países.
+
+En 1840 se intentó exportar otros productos agrícolas como el algodón, pero este intento fracasó por carecer de condiciones económicas adecuadas para la producción de este. Todos los esfuerzos del gobierno para poder aumentar la producción de algodón fueron en vano, ya que para el año 1858 únicamente el departamento de Usulután producía una pequeña cantidad. Otros países como Inglaterra también quisieron incentivar la producción de algodón en el país para abastecer su propia industria textil, pero esto no resultó del todo bien. Debido a que el algodón era escaso, el precio de este comenzó a aumentar y los precios del añil disminuyeron por lo que hubo un incentivo para los productores de sembrar algodón, convirtiéndose rápidamente en el negocio más importante para exportar.  Pero como todo tiene su principio y su final, la producción algodonera empezó a descender abruptamente en 1866 porque El Salvador no pudo competir con otros países a causa del incremento en los costos de limpiar, embalar y exportar el algodón.
+
+En las últimas décadas del siglo, el añil también dejó de ser el producto más importante para exportar puesto que su precio caía en mayor proporción que su producción, esto abrió paso al café. En 1870, las exportaciones de café estaban alcanzando las del añil, tanto así que para 1874 las exportaciones de añil habían caído a menos de la mitad, mientras que las del café ascendían a un 35% y para 1892 ya eran del 80%. La transición de cultivar añil a cultivar café fue lenta. Aunque el precio del añil fue decreciendo, la producción del mismo estuvo arriba del millón hasta finales del siglo XIX. Después de esto y para 1897 ya se había inventado la primera tinta sintética, sustituyendo al añil, además que el café experimentó un acelerado crecimiento en su producción, pero esto no quiere decir que pasó de la noche a la mañana a convertirse en el principal producto de exportación. A finales del siglo XIX cultivar el café ya traía grandes beneficios y significaba exportaciones con conexión a Europa y Estados Unidos quienes distribuían y transportaban. De esta manera el café se convirtió en un negocio multidimensional del que dependían muchas familias salvadoreñas.
+
+En este tiempo las exportaciones del café eran del 95% de las exportaciones totales. Pero en 1929 los precios del café en el mercado mundial eran demasiado bajos en relación con el coste de producción. El efecto que resultó de la contracción en la economía mundial, fueron muy negativos a tal punto que la gran parte de la producción de ese momento no pudo colocarse ni con los precios bajos. Algunos productores para estas situaciones acumulaban miles de sacos en sus bodegas y otros mejor no cortaban el grano.
+
+En el año 1978, el 89% que percibía de divisas El Salvador era de la actividad exportadora, el 81% era de las agroexportaciones tradicionales y (8%) de las exportaciones no tradicionales para este periodo la exportación de las maquilas era un porcentaje escaso del 3 %.
+
+Empezando la década de los 80 's el sector primario empezó a disminuir considerablemente sus exportaciones y por ende sus entradas de capital ya que el modelo agroexportador era quien permitía al país tener entradas considerables de divisas, dando paso a nuevas fuerzas exportadoras entre las cuales está el sector maquila.
+
+<div id="id7"/>
+# 7. Marco referencial
+
+<div id="id7.1"/>
+## 7.1. Estudios de las Exportaciones de El salvador
+Las exportaciones son el principal comienzo de las empresas para lograr hacer negocios internacionales. Las empresas que deciden salir a los mercados mundiales lo hacen principalmente para lograr expandir su producto y sus niveles de ingresos, así como también para diversificar sus sedes de ventas. Las exportaciones se pueden definir brevemente como el envío legal de productos hacia un destino fuera de las fronteras nacionales para uso o consumo.
+Desde un punto de vista macroeconómico es de mucha utilidad medir los niveles de exportaciones de un país. Los datos de las exportaciones nos brindaran la estabilidad comercial y la demanda de productos nacionales en el extranjero. Los índices para medir los niveles de exportaciones en un país determinado son variados según lo ameriten las necesidades de la investigación, pero en el ámbito internacional se tiene un estándar organizado de índices generales y comunes para ver el crecimiento o deterioro de las mismas. Los principales indicadores teóricos y estadísticos utilizados en el análisis comercial se presentan a continuación:
+
+<div id="id7.1.1"/>
+### a) Indicadores de posición
+
+Estos indicadores muestran el grado de internacionalización de la economía local en los mercados mundiales. Durán (2008) menciona los índices más comunes para medir este grado y estos son en primer lugar, el saldo de la balanza comercial constituido por la diferencia entre las exportaciones y las importaciones totales del país; en segundo lugar, las exportaciones por habitantes, es decir, las exportaciones divididas por la población total; en tercer lugar, la apertura del país respecto al comercio mundial constituido por las exportaciones del país sobre las exportaciones globales y en cuarto lugar el nivel de participación en el comercio internacional medido por la cantidad de empresas locales exportadoras e importadoras.
+
+<div id="id7.1.2"/>
+### b) Indicadores de dinamismo comercial
+
+En primer lugar, tenemos el índice de las ventajas comparativas. El “índice es utilizado para analizar las ventajas o desventajas comparativas de los intercambios comerciales de un país con sus socios comerciales o diversos grupos de países” (Durán,2008, pg. 23).
+En segundo lugar, tenemos el índice de Balassa este mide el grado de importancia de un producto dentro de las exportaciones de un mercado a otro mercado, contra la importancia de las exportaciones del mismo producto en las exportaciones del mismo producto hacia el mundo. Este índice pertenece al grupo de ventajas comparativas.
+  En tercer lugar, el índice de similitud, “se calcula como la agregación de la mínima participación de cada grupo de productos en las exportaciones totales de cada región a un mercado de destino homogéneo que puede ser una subregión o el mundo” (Durán,2008, pg. 34).
+
+<div id="id7.1.3"/>
+### c) Indicadores de integración regional
+
+La importancia de estos indicadores radica en el hecho de que son especificados para una región haciéndolos necesarios para el análisis de la posición comercial dentro del grupo de países. El indicador más conocido e importante es el índice de comercio intrarregional, que mide la importancia de los flujos comerciales interregionales. Se calcula relacionando el total del comercio recíproco entre los miembros de una unión aduanera o acuerdo comercial (sea por exportaciones, importaciones o intercambio comercial), sobre el total de las exportaciones que el grupo de países destina a todo el mundo.
+
+<div id="id7.2"/>
+## 7.2. Otros modelos y teorías
+
+<div id="id7.2.1"/>
+### a) Modelos clásicos de equilibro general sobre el comercio
+
+Este es un modelo perteneciente a las ventajas comparativas que busca que el comercio de un país se de acuerdo a las capacidades tecnológicas que se le facilite al mismo y de esa manera diferenciar de mejor manera su participación entre los socios comerciales, este es un indicador que muestra sobre todo un ambiente sectorial.
+
+<div id="id7.2.2"/>
+### b) Modelos basados en la cadena de suministro
+
+Estos modelos se enfocan en el comercio de piezas o materias primas aludiendo que los productos grandes necesitan materias de otros países para poder crearlos. Este modelo ratifica que los costos en el proceso productivo aumentan debido a que los diferentes componentes se fabrican en distintos países y tienen que pasar muchas veces las fronteras nacionales lo que causa una acumulación de costos, esto afecta al comercio ya que es mucho más barata la producción de bienes finales que los bienes complejos o tecnológicos grandes. En este caso cuanto mayor es el costo comercial, menores incentivos existen para el comercio dentro de la cadena de suministro y si el costo es muy grande solo se producirán bienes finales interrumpiendo las cadenas de valor mundiales.
+
+<div id="id7.3"/>
+## 7.3. Marco conceptual
+
+### Exportaciones 
+
+Las exportaciones son los bienes y servicios producidos en un país y comprados por residentes de otro país. No importa cuál sea el bien o el servicio. No importa cómo se envíe. Puede enviarse, enviarse por correo electrónico o transportarse en el equipaje personal en un avión. Si se produce en el país y se vende a alguien en un país extranjero, es una exportación.
+
+### Aranceles:
+
+Es un impuesto que se aplica a todos los bienes que son objeto de exportación e importación. El más frecuente es el impuesto que se cobra sobre las importaciones, mientras los aranceles sobre las exportaciones son menos corrientes; también pueden existir aranceles de tránsito que gravan los productos que entran en un país con destino a otro.
+
+
+### Tasa de apertura:
+
+El coeficiente de apertura externa de un país es una medida útil para conocer qué tan internacionalizada está una economía determinada. Pues muestra el nivel de dependencia respecto al resto del mundo. Esto último, calculando el peso del comercio exterior para la actividad económica total.
+
+### PIB per cápita: 
+
+Ingreso per cápita o renta per cápita es un indicador económico que mide la relación existente entre el nivel de renta de un país y su población. Para ello, se divide el Producto Interior Bruto (PIB) de dicho territorio entre el número de habitantes. 
+
+### Índice de precios a las exportaciones: 
+
+Mide los cambios de precio en los bienes vendidos al extranjero. Este índice es un buen indicador del valor de la divisa y la fuerza del mercado, ya que hacen un seguimiento de las subidas y bajadas de los bienes comercializados a nivel internacional que se producen como resultado de movimientos en el valor del dólar y en el mercado global de diversos productos.
+
+### índice de producción Industrial: 
+
+El índice de producción industrial (IPI) mide los niveles de producción en los sectores de manufactura, minería, incluidos los servicios de perforación de campos de petróleo y gas, y de servicios públicos de electricidad y gas. También mide la capacidad, una estimación de los niveles de producción que podrían mantenerse de manera sostenible; y utilización de la capacidad, la relación entre la producción real y la capacidad. 
+No expresan volúmenes o valores absolutos de producción, sino el cambio porcentual en la producción en relación con al año base. Además, las fluctuaciones dentro del sector industrial explican la mayor parte de la variación en el crecimiento económico general.
+
+### Variables dummy:
+
+Es una variable utilizada para explicar valores cualitativos en un modelo de regresión.
+
+### Análisis exploratorio de datos (EDA):
+
+EDA se utiliza principalmente para ver qué datos pueden revelar más allá del modelado formal o la tarea de prueba de hipótesis y proporciona una mejor comprensión de las variables del conjunto de datos y las relaciones entre ellas. También puede ayudar a determinar si las técnicas estadísticas que está considerando para el análisis de datos son apropiadas. (IBM, 2020)
+
+<div id="id8"/>
+# 8. Especificación
+
+<div id="id8.1"/>
+## Planteamiento Teórico del Fenómeno Económico
+
+<div id="id8.1.1"/>
+## Variables endógenas y exógenas
+
+El marco en que trabajaremos las exportaciones de camisas como variable dependiente está regido por una serie de variables de principal interés ante ella que se dividen de la siguiente forma:
+
+### a) Variable endógena:
+
+-	Exportaciones de camisas de punto de algodón de El Salvador
+
+### b) Variables Exógenas:
+-	Índice de precios a las exportaciones de El Salvador
+-	PIB per cápita de Estados Unidos
+-	Tasa de apertura de Estados Unidos
+-	Índice de producción industrial de El Salvador
+-	Importaciones de capital de El Salvador
+
+<div id="id8.2"/>
+## Relación funcional entre variables
+
+El planteamiento del modelo se enfoca en la demanda de exportaciones de camisas de punto de algodón tomando como referencia los principales determinantes. Las variables ajenas a la economía local estarán dirigidas en visualizar la demanda de nuestro bien en el principal socio, Estados Unidos tal como lo define Claudio (2005). 
+
+Las variables macroeconómicas establecidas para Estados Unidos nos servirán de referencia en el análisis del crecimiento de las exportaciones porque representan una de las mayores economías consumidoras de las camisas de punto de algodón de nuestro país. Seguidamente las variables de El Salvador nos darán un camino para saber si el crecimiento de las exportaciones de las camisas de punto de algodón se explica por nuestras mediciones macroeconómicas internas.
+
+Por estos motivos analizamos de manera conjunta durante un periodo de 16 años mensualmente, correspondiente a 192 observaciones de cada una. Las relaciones de los regresores respecto a nuestra variable endógena, exportaciones de camisas de punto de algodón $Xc$, está dado por la siguiente función:
+
+$$ Xc=f(Mk,IPX, Ypc,T,PI)$$
+
+Donde el indicador respectivo para cada variable aparece listado en el parrafo siguiente junto a la relación esperada con la variable endógena:
+
+
+$Mk$ 
+
+> Importaciones de bienes de capital de El Salvador	(Positiva)
+
+$IPX$	 
+
+> Índice de precios a las exportaciones de El Salvador	(Negativa)
+
+$Ypc$	
+
+> PIB per cápita de Estados Unidos	(Positiva)
+
+$T$	 
+
+> Tasa de apertura de Estados Unidos	(Positiva)
+
+$PI$	
+
+> Índice de producción Industrial de El Salvador (Positiva)
+
+<div id="id8.3"/>
+## Especificación del modelo matemático y estadístico
+
+<div id="id8.3.1"/>
+### Modelo matemático
+
+$$Xc=T+Ypc+Mk+PI-IPX$$
+<div id="id8.3.2"/>
+### Modelo estadístico
+
+Debido a que el modelo matemático puede no incluir otras variables que explican el fenómeno, ni las posibles imperfecciones en la relación funcional, esta investigación esta propensa a tener variabilidad respecto a los resultados esperados tal motivo lleva a que se agregue un grado de error a la ecuación representado por $ϵ$, relacionado de la siguinte forma:
+
+$$ Xc=T+Ypc+Mk+PI-IPX+ϵ$$
+
+
+\newpage
+
+<div id="id9"/> 
+# 9. Evidencia Empírica del Fenómeno Económico
+
+
+```{r, message=F,warning=F}
+library(dplyr)
+library(readxl)
+Data_Trabajo <- read_excel("../Data/Data_Trabajo.xlsx")
+Data_Trabajo <- Data_Trabajo %>%
+  rename(Exportaciones.Camisas=Xc,Tasa.Apertura=TA,
+         Pib.Per.Capita=Ypc,
+         Precios.Exportaciones=IPX,
+         Importacion.Capital=Mk,
+         Produccion.Industrial=PI)
+Data_Trabajo <- as.data.frame(Data_Trabajo)
+Data_Trabajo$Pib.Per.Capita <- as.numeric(Data_Trabajo$Pib.Per.Capita)
+Data_Trabajo$Precios.Exportaciones <- as.numeric(Data_Trabajo$Precios.Exportaciones)
+Data_Trabajo$Produccion.Industrial <- as.numeric(Data_Trabajo$Produccion.Industrial)
+dplyr::glimpse(Data_Trabajo)
+```
+
+\newpage
+
+<div id="id10"/>
+# 10. Bibliografía
+
+Analysis, B. o. (2021). Data by Topic. Retrieved from https://www.bea.gov/data/gdp
+
+Analysis, B. o. (2021). Data by Topic. Obtenido de https://www.bea.gov/data/gdp
+
+Banco Central de Reserva de El Salvador. (2021, Marzo). Indices del Sector Externo. Retrieved from https://www.bcr.gob.sv/bcrsite/?cdr=41
+
+BD.Nomics. (Abril de 2021). International Financial Statistics. Obtenido de https://db.nomics.world/IMF/IFS
+
+Browning, D. (1998). El Salvador, La Tierra y el hombre (Vol. Cuarta Edición). San Salvador: CONCULTURA.
+
+Carmona, L. R. (2006). CAFTA-AR agricultura y soberanía alimentaria. San Salvador.
+
+Fuentes, H. L. (2002). La economía de El Salvador en el siglo XIX (Vol. Primera Edición). San Salvador: Dirección de Publicaciones e Impresos, Consejo Nacional para la Cultura y el Arte.
+
+Timossi, G. (1989). Deuda Externa y Ajuste Extructura. CRIES.
+
+IBM Cloud Education. (2020, Agosto 25). Análisis exploratorio de datos. Retrieved from https://www.ibm.com/cloud/learn/exploratory-data-analysis
+
+Unidos, C. d. (2020). DataWeb. Obtenido de https://dataweb.usitc.gov/login?return=%2Ftrade
+
+<div id="id11"/>
+# 11. Anexos
+
+## R Data
+
+```{r}
+save.image("../Data_Trabajo.RData")
+```
+
+## Nombres de Archivos:
+
+<div class="archivos">
+
++ **Data_Trabajo.xlsx :** Archivo excel que contiene todos los datos utilizados en el analisis.
+
++ **Primer.Avance.Grupo.06.Rmd :** El codigo R-Markdown donde se realizo el trabajo.
+
++ **Primer.Avance.Grupo.06.pdf :** Archivo virtual en formato PDF correspondiente al R-Markdown
+
++ **Primer.Avance.Grupo.06.html :** Archivo web correspondiente al R-Markdown
+
++ **Data_Trabajo.RData :** Enviroment que incluye todos los objetos generados durante la investigación.
+
+</div>
+
+
+\newpage
+
+
+# 12. Pruebas de Normalización
+
+```{r, echo=F, warning=F,message=F}
+library(dplyr)
+library(stargazer)
+library(fitdistrplus) ### Distribución Normal
+library(normtest) ### Prueba de JARQUE-BERA
+library(nortest) ### Kolmogorov-Smirnov
+library(psych) ### Prueba de Farrar (Bartlett)
+library(car) ### VIF
+library(mctest) ### vif
+```
+
+## 12.1. Estimación del Modelo
+
+```{r,warning=F,message=F}
+options(scipen = 999999)
+Ecuacion_Modelo <- lm(formula = Exportaciones.Camisas ~ Tasa.Apertura +
+                        Pib.Per.Capita+Precios.Exportaciones+
+                        Importacion.Capital+Produccion.Industrial,
+                        data = Data_Trabajo)
+stargazer(Ecuacion_Modelo,
+          title = "Ecuación Estimada", 
+          type = "text", 
+          digits = 4 )
+summary(Ecuacion_Modelo)
+```
+
+## 12.2. Pruebas de Distribución Normal
+
+```{r}
+Fit_Normal <- fitdist(data = Ecuacion_Modelo$residuals,distr = "norm")
+plot(Fit_Normal)
+summary(Fit_Normal)
+```
+
+## 12.3. Prueba de Jarque Bera
+
+```{r}
+jb.norm.test(Ecuacion_Modelo$residuals)
+```
+
+## 12.4. Prueba de Kolmogorov-Smirnov
+
+```{r}
+lillie.test(Ecuacion_Modelo$residuals)
+```
+
+## 12.5. Prueba de Shapiro Wilk
+
+```{r}
+shapiro.test(Ecuacion_Modelo$residuals)
+```
+
+# 13. Pruebas de Multicolinealidad
+
+## Sigma Matriz
+
+```{r}
+Matriz.X <- model.matrix(Ecuacion_Modelo)
+Matriz.XX <- t(Matriz.X)%*%Matriz.X
+```
+
+## Sigma Matriz Normalizada
+
+```{r}
+options(scipen = 99999999)
+Sn <- solve(diag(sqrt(diag(Matriz.XX))))
+XX.Normalizada <- (Sn%*%Matriz.XX)%*%Sn %>% print() 
+```
+
+## Autovalores
+
+```{r}
+Lambdas <- eigen(XX.Normalizada, symmetric = T)
+stargazer(Lambdas$values, type = "text")
+```
+## Indice de Condicion 
+
+```{r}
+K <- sqrt(max(Lambdas$values)/min(Lambdas$values)) %>% print()
+```
+# Prueba de Farrar Glaubar (Bartlett)
+
+```{r}
+fg_test <- cortest.bartlett(Matriz.X[,-1])
+print(fg_test)
+```
+
+# Factores Inflasionarios de la Varianza
+
+```{r}
+vifs_car <- vif(Ecuacion_Modelo)
+print(vifs_car)
+mc.plot(mod = Ecuacion_Modelo,vif = 3)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

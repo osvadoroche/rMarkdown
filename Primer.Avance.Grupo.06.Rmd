@@ -1,13 +1,6 @@
 ---
 output: 
-  html_document:
-    theme: journal
-    highlight: null
-    toc: true
-    toc_depth: 5
-    toc_float:
-      collapsed: true
-      smooth_scroll: true
+  rmdformats::readthedown
 ---
 
 ```{r setup, include=FALSE}
@@ -15,50 +8,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{css, echo=FALSE}
-
-/*Este Codigo se utiliza unicamente para dar estilo al documento*/
-
-h1,h2,h3,h4{
-    font-size:18px;
-    font-weight: bold;
-    font-family: 'Times New Roman', Times, serif;
-    line-height:2;
-}
-
-h1 {
-    text-align: center;
-}
-
-h4{
-    text-align:center;
-    font-weight: normal;
-    line-height:1;
-}
-    
-p, li, li > a, p > a{
-    font-size:18px;
-    font-family: 'Times New Roman', Times, serif;
-    line-height: 2;
-    color:Black;
-}
- 
-p{
-  text-indent:36.02px;
-}
-
-#div {
-#      width:612px;
-#}
-.grupos > h1{
-  line-height:1;
-}
-
-.archivos > ul > li > p{
-    text-indent:0;
-}
-
-```
 
 # Universidad de El Salvador 
 # Facultad de Ciencias Económicas
@@ -439,24 +388,179 @@ $$ Xc=T+Ypc+Mk+PI-IPX+ϵ$$
 ```{r, message=F,warning=F}
 library(dplyr)
 library(readxl)
-Data_Trabajo <- read_excel("../Data/Data_Trabajo.xlsx")
-Data_Trabajo <- Data_Trabajo %>%
-  rename(Exportaciones.Camisas=Xc,Tasa.Apertura=TA,
-         Pib.Per.Capita=Ypc,
-         Precios.Exportaciones=IPX,
-         Importacion.Capital=Mk,
-         Produccion.Industrial=PI)
+Data_Trabajo <- read_excel("../Data/Data_Trabajo.xlsx", col_types = "numeric")
 Data_Trabajo <- as.data.frame(Data_Trabajo)
-Data_Trabajo$Pib.Per.Capita <- as.numeric(Data_Trabajo$Pib.Per.Capita)
-Data_Trabajo$Precios.Exportaciones <- as.numeric(Data_Trabajo$Precios.Exportaciones)
-Data_Trabajo$Produccion.Industrial <- as.numeric(Data_Trabajo$Produccion.Industrial)
 dplyr::glimpse(Data_Trabajo)
 ```
 
 \newpage
 
+
+# 10. Pruebas de Normalización
+
+```{r, echo=F, warning=F,message=F}
+library(dplyr)
+library(stargazer)
+library(fitdistrplus) ### Distribución Normal
+library(normtest) ### Prueba de JARQUE-BERA
+library(nortest) ### Kolmogorov-Smirnov
+library(psych) ### Prueba de Farrar (Bartlett)
+library(car) ### VIF
+library(mctest) ### vif
+```
+
+## 10.1. Estimación del Modelo
+
+```{r,warning=F,message=F}
+options(scipen = 999999)
+Ecuacion_Modelo <- lm(formula = Xc~ TA + Ypc + 
+                        IPX + Mk + PI, data = Data_Trabajo)
+stargazer(Ecuacion_Modelo,
+          title = "Ecuación Estimada", 
+          type = "text", 
+          digits = 4 )
+```
+
+
+
+## 10.2. Pruebas de Distribución Normal
+
+```{r}
+Fit_Normal <- fitdist(data = Ecuacion_Modelo$residuals,distr = "norm")
+plot(Fit_Normal)
+summary(Fit_Normal)
+```
+
+Mediante las gráfica Q-Q Plot se observa que el valor residual observado es similar al valor residual obtenido. los datos muestran ajuste a la línea de 45 grados se concluye entonces que los datos presentan una ditibución normal.
+
+Por su parte el gráfico P-P Plot tiene una probabilidad observada cercana a la probabilidad obtenido.Los datos tambien muestran una distribución cercana a la normal.
+
+## 10.3. Prueba de Jarque Bera
+
+```{r}
+jb.norm.test(Ecuacion_Modelo$residuals)
+```
+
+Tomando en cuenta que el nivel de significancia es del 5% y el P-value aproximadamente de 0% existe evidencia en favor de rechazar la hipotesis nula. Por lo tanto, los residuos del modelo no siguen una distrubución normal con media cero y varianza constante.
+
+
+## 10.4. Prueba de Kolmogorov-Smirnov
+
+```{r}
+lillie.test(Ecuacion_Modelo$residuals)
+```
+
+Esta prueba mide la distancia máxima esperada entre la distribución teórica y la distribución empirica para muestras mayores a 50 observaciones.
+
+Mediante la prueba KS existe evidencia en favor de no rechazar la Hipótesis Nula. Por lo tanto los residuos del modelo siguen una distribución normal con media cero y varianza constante.
+
+
+## 10.5. Prueba de Shapiro Wilk
+
+```{r}
+shapiro.test(Ecuacion_Modelo$residuals)
+```
+
+Esta prueba trata de verificar si la pendiente de la regresión del cuartil teórico y el cuartil empírico es igual a uno.
+
+Debido a que P-value es menor al nivel de significancia  del 5% existe evidencia en favor de rechazar la hipótesis nula. Por lo tanto, los residuos del modelo no siguen una distrubución normal con media cero y varianza constante.
+
+# 11. Pruebas de Multicolinealidad
+
+## 11.1. Calculos Previos
+
+*Sigma Matriz*
+
+```{r}
+Matriz.X <- model.matrix(Ecuacion_Modelo)
+Matriz.XX <- t(Matriz.X)%*%Matriz.X
+```
+
+*Sigma Matriz Normalizada*
+
+```{r}
+options(scipen = 99999999)
+Sn <- solve(diag(sqrt(diag(Matriz.XX))))
+XX.Normalizada <- (Sn%*%Matriz.XX)%*%Sn %>% print() 
+```
+
+*Autovalores*
+
+```{r}
+Lambdas <- eigen(XX.Normalizada, symmetric = T)
+stargazer(Lambdas$values, type = "text")
+```
+## 11.2. Indice de Condicion 
+
+```{r}
+K <- sqrt(max(Lambdas$values)/min(Lambdas$values)) %>% print()
+```
+
+El indice de condición mide la variación de los resultados ante una cambio en los datos. En las observaciones del modelo el índice de condición es de 167.85 por lo que sufre de una multicolinealidad severa, un cambio leve en un regresor tenderá a generar variaciones grandes en las demás variables.
+
+## 11.3. Prueba de Farrar Glaubar (Bartlett)
+
+```{r, message=F, warning=F}
+fg_test <- cortest.bartlett(Matriz.X[,-1])
+print(fg_test)
+```
+
+Esta prueba identifica si a nivel poblacional los regresores del modelo ppresentan independencia estadística, a trávez de la matriz de correlación muestral y se verifica si a nivel poblacional dicha matriz de correlación corresponde a una matriz identidad.
+
+Debido a que el P-ese es menor al nivel de significancia existe evidencia para rechzar la hipotesis nula, por lo que la que la matriz de correlación de las variables exogenas no es poblacionalmente una matriz identidad, es decir, si hay relación entre las variables explicativas.
+
+## 11.4. Factores Inflacionarios de la Varianza
+
+```{r}
+vifs_car <- vif(Ecuacion_Modelo)
+print(vifs_car)
+mc.plot(mod = Ecuacion_Modelo,vif = 3)
+```
+
+
+
+# 12. Preuba de Heterocedasticidad
+
+## 12.1. Prueba de White
+
+```{r, message=F, warning=F}
+library(lmtest)
+Prueba.White <- bptest(Ecuacion_Modelo,
+                       ~I(TA^2) + I(Ypc^2) + I(IPX^2) + I(Mk^2) + I(PI^2) +
+                       TA*Ypc + TA*IPX + TA*Mk + TA*PI + IPX*Ypc + 
+                       IPX*Mk + IPX*PI + Ypc*Mk + Ypc*PI + PI*Mk, 
+                       data = Data_Trabajo)
+print(Prueba.White)
+```
+
+Hay evidencia a favor de rechazar la hipotesis nula, se concluye entonces que la varianza de los residuos es heterocedastica.
+
+# 13. Pruebas de Autocorrelación
+
+
+## 13.1 Autocorrelación de Primer Orden: Prueba de Durbin-Watson
+
+```{r, message=F, warning=F}
+library(lmtest)
+dwtest(Ecuacion_Modelo, alternative = "two.sided", iterations=1000)
+```
+
+Como el P-value es menor al nivel de significancia del 5% Se rechaza la hipótesis nula. Por lo tanto, hay evidencia de autocorrelación de primer orden en los residuos del modelo.
+
+## 13.2. Autocorrelación de Orden superior: Prueba del multiplicador de Lagrange (Breusch-Godfrey)
+
+```{r}
+library(lmtest)
+options(scipen = 9999)
+bgtest(Ecuacion_Modelo,order = 2)
+```
+
+Como el P-value es menor al nivel de significancia del 5% Se rechaza la hipótesis nula. Por lo tanto, hay evidencia de autocorrelación de segundo orden en los residuos del modelo.
+
+\newpage
+
 <div id="id10"/>
-# 10. Bibliografía
+# 14. Bibliografía
 
 Analysis, B. o. (2021). Data by Topic. Retrieved from https://www.bea.gov/data/gdp
 
@@ -479,15 +583,15 @@ IBM Cloud Education. (2020, Agosto 25). Análisis exploratorio de datos. Retriev
 Unidos, C. d. (2020). DataWeb. Obtenido de https://dataweb.usitc.gov/login?return=%2Ftrade
 
 <div id="id11"/>
-# 11. Anexos
+# 15. Anexos
 
-## R Data
+## a) R Data
 
 ```{r}
 save.image("../Data_Trabajo.RData")
 ```
 
-## Nombres de Archivos:
+## b) Nombres de Archivos:
 
 <div class="archivos">
 
@@ -502,113 +606,6 @@ save.image("../Data_Trabajo.RData")
 + **Data_Trabajo.RData :** Enviroment que incluye todos los objetos generados durante la investigación.
 
 </div>
-
-
-\newpage
-
-
-# 12. Pruebas de Normalización
-
-```{r, echo=F, warning=F,message=F}
-library(dplyr)
-library(stargazer)
-library(fitdistrplus) ### Distribución Normal
-library(normtest) ### Prueba de JARQUE-BERA
-library(nortest) ### Kolmogorov-Smirnov
-library(psych) ### Prueba de Farrar (Bartlett)
-library(car) ### VIF
-library(mctest) ### vif
-```
-
-## 12.1. Estimación del Modelo
-
-```{r,warning=F,message=F}
-options(scipen = 999999)
-Ecuacion_Modelo <- lm(formula = Exportaciones.Camisas ~ Tasa.Apertura +
-                        Pib.Per.Capita+Precios.Exportaciones+
-                        Importacion.Capital+Produccion.Industrial,
-                        data = Data_Trabajo)
-stargazer(Ecuacion_Modelo,
-          title = "Ecuación Estimada", 
-          type = "text", 
-          digits = 4 )
-summary(Ecuacion_Modelo)
-```
-
-## 12.2. Pruebas de Distribución Normal
-
-```{r}
-Fit_Normal <- fitdist(data = Ecuacion_Modelo$residuals,distr = "norm")
-plot(Fit_Normal)
-summary(Fit_Normal)
-```
-
-## 12.3. Prueba de Jarque Bera
-
-```{r}
-jb.norm.test(Ecuacion_Modelo$residuals)
-```
-
-## 12.4. Prueba de Kolmogorov-Smirnov
-
-```{r}
-lillie.test(Ecuacion_Modelo$residuals)
-```
-
-## 12.5. Prueba de Shapiro Wilk
-
-```{r}
-shapiro.test(Ecuacion_Modelo$residuals)
-```
-
-# 13. Pruebas de Multicolinealidad
-
-## Sigma Matriz
-
-```{r}
-Matriz.X <- model.matrix(Ecuacion_Modelo)
-Matriz.XX <- t(Matriz.X)%*%Matriz.X
-```
-
-## Sigma Matriz Normalizada
-
-```{r}
-options(scipen = 99999999)
-Sn <- solve(diag(sqrt(diag(Matriz.XX))))
-XX.Normalizada <- (Sn%*%Matriz.XX)%*%Sn %>% print() 
-```
-
-## Autovalores
-
-```{r}
-Lambdas <- eigen(XX.Normalizada, symmetric = T)
-stargazer(Lambdas$values, type = "text")
-```
-## Indice de Condicion 
-
-```{r}
-K <- sqrt(max(Lambdas$values)/min(Lambdas$values)) %>% print()
-```
-# Prueba de Farrar Glaubar (Bartlett)
-
-```{r}
-fg_test <- cortest.bartlett(Matriz.X[,-1])
-print(fg_test)
-```
-
-# Factores Inflasionarios de la Varianza
-
-```{r}
-vifs_car <- vif(Ecuacion_Modelo)
-print(vifs_car)
-mc.plot(mod = Ecuacion_Modelo,vif = 3)
-```
-
-
-
-
-
-
 
 
 

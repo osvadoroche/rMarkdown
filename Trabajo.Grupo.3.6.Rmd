@@ -1,67 +1,87 @@
 ---
 output:
-  rmdformats::downcute
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+    number_sections: false
+bibliography: bibliografia.bib
+csl: apa.csl.txt
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 ```
 
 
-```{css, echo= FALSE}
+```{css, echo = FALSE}
 
-*{
-    padding: 0;
-    margin: 0;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #fefefe;
+    color: #222;
 }
 
-div#toc.SidebarItems{
-    font-weight: 300 !important;
-    line-height: 2 !important;
-    font-family: Georgia, 'Times New Roman', Times, serif !important;
-    font-size: 18px;
+
 }
 
-.page-content h1, .page-content h2, .page-content h3, .page-content h4, .page-content h5, .page-content h6 {
-    font-weight: bold !important;
+h1, h2, h3, h4, h5{
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
     line-height: 2;
-    font-family: Georgia, 'Times New Roman', Times, serif !important;
-    font-size: 18px;
 }
 
-.page-content h1 {
-    border-bottom: 0px solid var(--border-color) !important;
-    margin-top: 0rem !important; 
-    padding-bottom: 0px !important;
-    text-align: center !important;
-}
-
-.page-content h4{
-    font-weight: normal !important;
+h1 {
+    font-size: 20PX;
     text-align: center;
-    line-height: 1 !important;
+    font-weight: bold;
+    line-height: 2.5;
 }
 
-.page-content p{
-    font-family: Georgia, 'Times New Roman', Times, serif;
+h2, h3{
+   font-size: 18px;
+   font-weight: bold;
+   line-height: 2.5;
+}
+
+h4{
     font-size: 18px;
+    text-align: center;
+}
+
+
+p{
+    line-height: 2; 
+    padding-right: 0;
+    font-size: 18px;
+    font-family:  Arial, Helvetica, sans-serif;
+    text-indent:36.02px;
     text-align: justify;
-    line-height: 2;
-    text-indent: 36.02px;
 }
 
-ol, ul{
-    font-family: Georgia, 'Times New Roman', Times, serif;
+ol, ul, li{
+    line-height: 2; 
+    padding-right: 0;
     font-size: 18px;
-    line-height: 2;
+    font-family:  Arial, Helvetica, sans-serif;
+    text-indent: 0px !important;
+    text-align: normal;
 }
+
+div.hipotesis p, div.archivos{
+    text-indent:0px;
+}
+
 ```
 
 
 # Universidad de El Salvador 
 # Facultad de Ciencias Económicas
 # Escuela de Economía
+
 
 <center>
 ![](https://www.ues.edu.sv/storage/app/media/minerva2.png){width=15%}
@@ -78,11 +98,11 @@ ol, ul{
 # Materia
 
 #### Econometría
- 
+
 # Integrantes
 
 ```{r echo=F, message=FALSE, warning=FALSE}
-library(flextable)
+library(kableExtra)
 library(dplyr)
 Nombres <- c("Cruz Alfaro Brayan Josué", 
              "Novoa Rubio Fernando Enrique", 
@@ -91,18 +111,10 @@ Nombres <- c("Cruz Alfaro Brayan Josué",
              "Velásquez González José Roberto")
 Carnet <- c("CA17113","NR18001","AP18007","RR18105","VG16027")
 Integrantes <- cbind(Nombres,Carnet) %>% as.data.frame()
-Tabla_Integrantes <- flextable(head(Integrantes),
-                               col_keys = c("Nombres", "Carnet"))
-
-Tabla_Integrantes %>% 
-  width(width = 2.5) %>%
-  align_text_col(align =  "justify", header =  TRUE , footer =  TRUE ) %>% 
-  bold(bold = TRUE, part = "header") %>% 
-  align (align =  "center" , part =  "header") %>% 
-  align (j =  2, align =  "center" , part =  "body" ) %>% 
-  width (j =  2 , width = 1.5 ) %>% 
-  bg (i =  1 , bg = "#eb6864", part =  "header") %>% 
-  color (i = 1, color = "#ffffff", part =  "header" )
+Integrantes %>%
+  kbl(align = c("lc")) %>% 
+  row_spec(0,bold = T, color = 'white', background = 'black') %>% 
+  kable_classic(full_width = F, html_font = "Arial", font_size = 18)
 ```
 
 
@@ -111,6 +123,7 @@ Tabla_Integrantes %>%
 
 
 \newpage
+
 
 
 # 1. Introducción
@@ -124,6 +137,7 @@ El Salvador en materia de comercio exterior, se distingue por tener un alto grad
 \newpage
 
 
+
 # 2. Justificación
 
 En El Salvador, las exportaciones se han llevado a cabo desde el siglo XVI con productos agrícolas como el añil, algodón y café, siendo este último el más representativo en el modelo agroexportador años más tarde, estos constituían la base de la economía salvadoreña y permitían al país abrirse al mundo comercial.
@@ -131,6 +145,7 @@ En El Salvador, las exportaciones se han llevado a cabo desde el siglo XVI con p
 En los últimos años, las exportaciones totales de El Salvador representan en promedio un 23% del PIB y únicamente el 5% de estas proviene de las industrias maquiladoras, sin embargo, uno de los productos que más se exportan hacia su principal socio comercial; los Estados Unidos, son las camisas de punto de algodón para hombre y para mujer que pertenecen a este mismo rubro.
 
 Por esto mismo, resulta interesante estimar las exportaciones conjuntas de estos productos aplicando métodos econométricos como el Modelo Clásico de Regresión Lineal Múltiple y aportar de alguna manera al estudio de la situación económica de El Salvador en el periodo de 2002 a 2017.
+
 
 
 
@@ -144,131 +159,37 @@ Determinar si el índice de precios a las exportaciones, la tasa de apertura, el
 
 ## Objetivos Específicos
 
-* Evaluar cuál de los regresores del estudio es más determinante en el crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017.
+Evaluar cuál de los regresores del estudio es más determinante en el crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017.
 
-* Calcular la autocorrelación entre las exportaciones de camisas de punto de algodón y el índice de precios a las exportaciones, la tasa de apertura, el PIB per cápita, la producción industrial y las importaciones de capital.
+Calcular la autocorrelación entre las exportaciones de camisas de punto de algodón y el índice de precios a las exportaciones, la tasa de apertura, el PIB per cápita, la producción industrial y las importaciones de capital.
 
-* Evaluar el desempeño predictivo del modelo a estimar sobre las exportaciones de camisas de punto hacia los Estados Unidos durante los años de 2002 al 2017.
+Evaluar el desempeño predictivo del modelo a estimar sobre las exportaciones de camisas de punto hacia los Estados Unidos durante los años de 2002 al 2017.
 
-* Estimar el comportamiento de los determinantes de las exportaciones mensuales de camisas de punto de algodón de El Salvador a Estados Unidos entre los años 2002 y 2017.
-
-
-# Planteamiento del Problema
-
-Las exportaciones e importaciones han sido de gran importancia para los países desde hace siglos, permitiendo el desarrollo de los mismos y moldeando la cultura de cada región, en la actualidad esto sigue vigente; los mercados están fuertemente globalizados, las relaciones económicas con el resto del mundo son indispensables para las economías de los países y para El Salvador no es la excepción dado que nuestro país tiene una fuerte dependencia con el comercio exterior, situación que puede observarse en la balanza de pagos. Resulta de suma importancia el estudio de los ingresos recibidos en el país por medio de las relaciones económicas internacionales, por ello en nuestro estudio nos enfocamos en las exportaciones de bienes y servicios.
+Estimar el comportamiento de los determinantes de las exportaciones mensuales de camisas de punto de algodón de El Salvador a Estados Unidos entre los años 2002 y 2017.
 
 
-En la última década las exportaciones de nuestro país han fluctuado entre el 21% y el 26% respecto al PIB; El Salvador ofrece una gran variedad de productos y servicios al resto del mundo, entre los sectores más destacados a nivel de exportación tenemos: Manufacturas diversas, agroindustria, alimentos y bebidas, y servicios. Dentro de las manufacturas tenemos que los productos de confección son el principal sector de las exportaciones salvadoreñas y entre esos productos de confección, destaca la categoría de camisetas de algodón de punto.
 
-Históricamente el principal socio comercial de El Salvador es Estados Unidos, seguido por Honduras, Guatemala, Nicaragua y Costa Rica que en conjunto demandaron el 85% del total exportado para el año 2018.
-
-Existen diversos determinantes de las exportaciones, estos pueden ser variables nacionales o extranjeras, en el presente estudio se han escogido las siguientes: aranceles, índice de precios de las exportaciones, tasa de apertura comercial, PIB per cápita e índice de producción industrial. 
-
-En virtud de lo anterior expuesto, se procede a la formulación del problema:
-
-¿El índice de precios a las exportaciones, la tasa de apertura, el PIB per cápita, la producción industrial y las importaciones de capital determinan de forma significativa el crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017?
+# 4. Marco Teórico
 
 
-# 5. Hipótesis
-
-
-## Hipótesis General
-
-H0: Las exportaciones de camisas de punto de algodón no son afectadas por determinantes como el índice de precios a las exportaciones, el PIB per cápita (EE. UU), las importaciones de capital, la tasa de apertura y la producción industrial durante el periodo comprendido desde 2002 hasta 2017.
-
-H1: Las exportaciones de camisas de punto de algodón son afectadas por determinantes como el índice de precios a las exportaciones, el PIB per cápita (EE. UU), las importaciones de capital, la tasa de apertura y la producción industrial durante el periodo comprendido desde 2002 hasta 2017.
-
-
-## Hipótesis Especificas
-
-**Tasa de Apertura Comercial**
-
-Ho: Mientras más alta es la Tasa de Apertura comercial de Estados Unidos mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-H1: Mientras más alta es la Tasa de Apertura comercial de Estados Unidos manor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-**PIB per Cápita de Estados Unidos**
-
-Ho: Mientras más alto es el PIB per Cápita de Estados Unidos mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-H1: Mientras más alto es el PIB per Cápita de Estados Unidos menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-**índice de precios a las exportaciones**
-
-Ho: Mientras más alto es el índice de precios a las exportaciones de El salvador menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon
-
-H1: Mientras más alto es el índice de precios a las exportaciones de El Salvador mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-**Importaciones de Capital**
-
-Ho: Mientras más alta son las importaciones de capital de El Salvador mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-H1: Mientras más alta son las importaciones de capital de El Salvador menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon
-
-**índice de producción industrial**
-
-Ho: Mientras más alto es el índice de producción industrial de El Salvador mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-H1: Mientras más alto es el índice de producción industrial de El Salvador menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.
-
-# 6. Marco Teórico
-
-
-## Antecedentes
+## 4.1. Antecedentes
 
 El cultivo del añil en El Salvador constituía una actividad económica muy importante siendo esta de origen español, mientras que la producción de Bálsamo y cacao era meramente indígena. Desde el siglo XVI el añil se esparció en toda la región centroamericana, para años más tarde convertirse en el producto más exportado en dicha región.
 
-En los años de mayor exportación se envió aproximadamente 500 mil libras de añil desde Centroamérica hasta Europa, durante el siglo XVII esta cantidad se duplicó. Solo San Salvador en 1807 producía 486,990 libras de añil y esto representaba el 77.71% de las exportaciones que hacía toda la región centroamericana en esa época. La producción y por ende las exportaciones siguieron creciendo hasta representar un 86.30% en tan solo un año. Pese a que la producción de añil era la actividad más viable para exportar en San Salvador, esta era afectada por las múltiples plagas y por la competencia de otros países.
+En los años de mayor exportación se envió aproximadamente 500 mil libras de añil desde Centroamérica hasta Europa, durante el siglo XVII esta cantidad se duplicó. Solo San Salvador en 1807 producía 486,990 libras de añil y esto representaba el 77.71% de las exportaciones que hacía toda la región centroamericana en esa época. La producción y por ende las exportaciones siguieron creciendo hasta representar un 86.30% en tan solo un año. Pese a que la producción de añil era la actividad más viable para exportar en San Salvador, esta era afectada por las múltiples plagas y por la competencia de otros países. [@browning1998salvador]
 
 En 1840 se intentó exportar otros productos agrícolas como el algodón, pero este intento fracasó por carecer de condiciones económicas adecuadas para la producción de este. Todos los esfuerzos del gobierno para poder aumentar la producción de algodón fueron en vano, ya que para el año 1858 únicamente el departamento de Usulután producía una pequeña cantidad. Otros países como Inglaterra también quisieron incentivar la producción de algodón en el país para abastecer su propia industria textil, pero esto no resultó del todo bien. Debido a que el algodón era escaso, el precio de este comenzó a aumentar y los precios del añil disminuyeron por lo que hubo un incentivo para los productores de sembrar algodón, convirtiéndose rápidamente en el negocio más importante para exportar.  Pero como todo tiene su principio y su final, la producción algodonera empezó a descender abruptamente en 1866 porque El Salvador no pudo competir con otros países a causa del incremento en los costos de limpiar, embalar y exportar el algodón.
 
-En las últimas décadas del siglo, el añil también dejó de ser el producto más importante para exportar puesto que su precio caía en mayor proporción que su producción, esto abrió paso al café. En 1870, las exportaciones de café estaban alcanzando las del añil, tanto así que para 1874 las exportaciones de añil habían caído a menos de la mitad, mientras que las del café ascendían a un 35% y para 1892 ya eran del 80%. La transición de cultivar añil a cultivar café fue lenta. Aunque el precio del añil fue decreciendo, la producción del mismo estuvo arriba del millón hasta finales del siglo XIX. Después de esto y para 1897 ya se había inventado la primera tinta sintética, sustituyendo al añil, además que el café experimentó un acelerado crecimiento en su producción, pero esto no quiere decir que pasó de la noche a la mañana a convertirse en el principal producto de exportación. A finales del siglo XIX cultivar el café ya traía grandes beneficios y significaba exportaciones con conexión a Europa y Estados Unidos quienes distribuían y transportaban. De esta manera el café se convirtió en un negocio multidimensional del que dependían muchas familias salvadoreñas.
+En las últimas décadas del siglo, el añil también dejó de ser el producto más importante para exportar puesto que su precio caía en mayor proporción que su producción, esto abrió paso al café. En 1870, las exportaciones de café estaban alcanzando las del añil, tanto así que para 1874 las exportaciones de añil habían caído a menos de la mitad, mientras que las del café ascendían a un 35% y para 1892 ya eran del 80%. La transición de cultivar añil a cultivar café fue lenta. Aunque el precio del añil fue decreciendo, la producción del mismo estuvo arriba del millón hasta finales del siglo XIX. Después de esto y para 1897 ya se había inventado la primera tinta sintética, sustituyendo al añil, además que el café experimentó un acelerado crecimiento en su producción, pero esto no quiere decir que pasó de la noche a la mañana a convertirse en el principal producto de exportación. A finales del siglo XIX cultivar el café ya traía grandes beneficios y significaba exportaciones con conexión a Europa y Estados Unidos quienes distribuían y transportaban. De esta manera el café se convirtió en un negocio multidimensional del que dependían muchas familias salvadoreñas. [@lindo2002economia]
 
-En este tiempo las exportaciones del café eran del 95% de las exportaciones totales. Pero en 1929 los precios del café en el mercado mundial eran demasiado bajos en relación con el coste de producción. El efecto que resultó de la contracción en la economía mundial, fueron muy negativos a tal punto que la gran parte de la producción de ese momento no pudo colocarse ni con los precios bajos. Algunos productores para estas situaciones acumulaban miles de sacos en sus bodegas y otros mejor no cortaban el grano.
+En este tiempo las exportaciones del café eran del 95% de las exportaciones totales. Pero en 1929 los precios del café en el mercado mundial eran demasiado bajos en relación con el coste de producción. El efecto que resultó de la contracción en la economía mundial, fueron muy negativos a tal punto que la gran parte de la producción de ese momento no pudo colocarse ni con los precios bajos. Algunos productores para estas situaciones acumulaban miles de sacos en sus bodegas y otros mejor no cortaban el grano.[@timossi1989centroamerica]
 
-En el año 1978, el 89% que percibía de divisas El Salvador era de la actividad exportadora, el 81% era de las agroexportaciones tradicionales y (8%) de las exportaciones no tradicionales para este periodo la exportación de las maquilas era un porcentaje escaso del 3 %.
+En el año 1978, el 89% que percibía de divisas El Salvador era de la actividad exportadora, el 81% era de las agroexportaciones tradicionales y (8%) de las exportaciones no tradicionales para este periodo la exportación de las maquilas era un porcentaje escaso del 3 %. [@Moreno2006cafta]
 
 Empezando la década de los 80 's el sector primario empezó a disminuir considerablemente sus exportaciones y por ende sus entradas de capital ya que el modelo agroexportador era quien permitía al país tener entradas considerables de divisas, dando paso a nuevas fuerzas exportadoras entre las cuales está el sector maquila.
 
 
-# 7. Marco referencial
-
-## 7.1. Estudios de las Exportaciones de El salvador
-Las exportaciones son el principal comienzo de las empresas para lograr hacer negocios internacionales. Las empresas que deciden salir a los mercados mundiales lo hacen principalmente para lograr expandir su producto y sus niveles de ingresos, así como también para diversificar sus sedes de ventas. Las exportaciones se pueden definir brevemente como el envío legal de productos hacia un destino fuera de las fronteras nacionales para uso o consumo.
-Desde un punto de vista macroeconómico es de mucha utilidad medir los niveles de exportaciones de un país. Los datos de las exportaciones nos brindaran la estabilidad comercial y la demanda de productos nacionales en el extranjero. Los índices para medir los niveles de exportaciones en un país determinado son variados según lo ameriten las necesidades de la investigación, pero en el ámbito internacional se tiene un estándar organizado de índices generales y comunes para ver el crecimiento o deterioro de las mismas. Los principales indicadores teóricos y estadísticos utilizados en el análisis comercial se presentan a continuación:
-
-
-### a) Indicadores de posición
-
-Estos indicadores muestran el grado de internacionalización de la economía local en los mercados mundiales. Durán (2008) menciona los índices más comunes para medir este grado y estos son en primer lugar, el saldo de la balanza comercial constituido por la diferencia entre las exportaciones y las importaciones totales del país; en segundo lugar, las exportaciones por habitantes, es decir, las exportaciones divididas por la población total; en tercer lugar, la apertura del país respecto al comercio mundial constituido por las exportaciones del país sobre las exportaciones globales y en cuarto lugar el nivel de participación en el comercio internacional medido por la cantidad de empresas locales exportadoras e importadoras.
-
-
-### b) Indicadores de dinamismo comercial
-
-En primer lugar, tenemos el índice de las ventajas comparativas. El “índice es utilizado para analizar las ventajas o desventajas comparativas de los intercambios comerciales de un país con sus socios comerciales o diversos grupos de países” (Durán,2008, pg. 23).
-En segundo lugar, tenemos el índice de Balassa este mide el grado de importancia de un producto dentro de las exportaciones de un mercado a otro mercado, contra la importancia de las exportaciones del mismo producto en las exportaciones del mismo producto hacia el mundo. Este índice pertenece al grupo de ventajas comparativas.
-  En tercer lugar, el índice de similitud, “se calcula como la agregación de la mínima participación de cada grupo de productos en las exportaciones totales de cada región a un mercado de destino homogéneo que puede ser una subregión o el mundo” (Durán,2008, pg. 34).
-
-
-### c) Indicadores de integración regional
-
-La importancia de estos indicadores radica en el hecho de que son especificados para una región haciéndolos necesarios para el análisis de la posición comercial dentro del grupo de países. El indicador más conocido e importante es el índice de comercio intrarregional, que mide la importancia de los flujos comerciales interregionales. Se calcula relacionando el total del comercio recíproco entre los miembros de una unión aduanera o acuerdo comercial (sea por exportaciones, importaciones o intercambio comercial), sobre el total de las exportaciones que el grupo de países destina a todo el mundo.
-
-
-## 7.2. Otros modelos y teorías
-
-
-### a) Modelos clásicos de equilibro general sobre el comercio
-
-Este es un modelo perteneciente a las ventajas comparativas que busca que el comercio de un país se de acuerdo a las capacidades tecnológicas que se le facilite al mismo y de esa manera diferenciar de mejor manera su participación entre los socios comerciales, este es un indicador que muestra sobre todo un ambiente sectorial.
-
-
-### b) Modelos basados en la cadena de suministro
-
-Estos modelos se enfocan en el comercio de piezas o materias primas aludiendo que los productos grandes necesitan materias de otros países para poder crearlos. Este modelo ratifica que los costos en el proceso productivo aumentan debido a que los diferentes componentes se fabrican en distintos países y tienen que pasar muchas veces las fronteras nacionales lo que causa una acumulación de costos, esto afecta al comercio ya que es mucho más barata la producción de bienes finales que los bienes complejos o tecnológicos grandes. En este caso cuanto mayor es el costo comercial, menores incentivos existen para el comercio dentro de la cadena de suministro y si el costo es muy grande solo se producirán bienes finales interrumpiendo las cadenas de valor mundiales.
-
-
-## 7.3. Marco conceptual
+## 4.2. Marco conceptual
 
 ### Exportaciones 
 
@@ -302,23 +223,125 @@ Es una variable utilizada para explicar valores cualitativos en un modelo de reg
 
 ### Análisis exploratorio de datos (EDA):
 
-EDA se utiliza principalmente para ver qué datos pueden revelar más allá del modelado formal o la tarea de prueba de hipótesis y proporciona una mejor comprensión de las variables del conjunto de datos y las relaciones entre ellas. También puede ayudar a determinar si las técnicas estadísticas que está considerando para el análisis de datos son apropiadas. (IBM, 2020)
+EDA se utiliza principalmente para ver qué datos pueden revelar más allá del modelado formal o la tarea de prueba de hipótesis y proporciona una mejor comprensión de las variables del conjunto de datos y las relaciones entre ellas. También puede ayudar a determinar si las técnicas estadísticas que está considerando para el análisis de datos son apropiadas. [@IBM:2020:Online]
 
 
-# 8. Especificación
+
+# 5. Marco referencial
+
+## 5.1. Estudios de las Exportaciones de El salvador
+
+Las exportaciones son el principal comienzo de las empresas para lograr hacer negocios internacionales. Las empresas que deciden salir a los mercados mundiales lo hacen principalmente para lograr expandir su producto y sus niveles de ingresos, así como también para diversificar sus sedes de ventas. Las exportaciones se pueden definir brevemente como el envío legal de productos hacia un destino fuera de las fronteras nacionales para uso o consumo.
+Desde un punto de vista macroeconómico es de mucha utilidad medir los niveles de exportaciones de un país. 
+
+Los datos de las exportaciones nos brindaran la estabilidad comercial y la demanda de productos nacionales en el extranjero. Los índices para medir los niveles de exportaciones en un país determinado son variados según lo ameriten las necesidades de la investigación, pero en el ámbito internacional se tiene un estándar organizado de índices generales y comunes para ver el crecimiento o deterioro de las mismas. Los principales indicadores teóricos y estadísticos utilizados en el análisis comercial se presentan a continuación:
 
 
-## Planteamiento Teórico del Fenómeno Económico
+### a) Indicadores de posición
+
+Estos indicadores muestran el grado de internacionalización de la economía local en los mercados mundiales. [@duran2008indicadores] menciona los índices más comunes para medir este grado y estos son en primer lugar, el saldo de la balanza comercial constituido por la diferencia entre las exportaciones y las importaciones totales del país; en segundo lugar, las exportaciones por habitantes, es decir, las exportaciones divididas por la población total; en tercer lugar, la apertura del país respecto al comercio mundial constituido por las exportaciones del país sobre las exportaciones globales y en cuarto lugar el nivel de participación en el comercio internacional medido por la cantidad de empresas locales exportadoras e importadoras.
+
+
+### b) Indicadores de dinamismo comercial
+
+En primer lugar, tenemos el índice de las ventajas comparativas. El “índice es utilizado para analizar las ventajas o desventajas comparativas de los intercambios comerciales de un país con sus socios comerciales o diversos grupos de países” [@duran2008indicadores].
+En segundo lugar, tenemos el índice de Balassa este mide el grado de importancia de un producto dentro de las exportaciones de un mercado a otro mercado, contra la importancia de las exportaciones del mismo producto en las exportaciones del mismo producto hacia el mundo. Este índice pertenece al grupo de ventajas comparativas.
+  En tercer lugar, el índice de similitud, “se calcula como la agregación de la mínima participación de cada grupo de productos en las exportaciones totales de cada región a un mercado de destino homogéneo que puede ser una subregión o el mundo” [@duran2008indicadores].
+
+
+### c) Indicadores de integración regional
+
+La importancia de estos indicadores radica en el hecho de que son especificados para una región haciéndolos necesarios para el análisis de la posición comercial dentro del grupo de países. El indicador más conocido e importante es el índice de comercio intrarregional, que mide la importancia de los flujos comerciales interregionales. Se calcula relacionando el total del comercio recíproco entre los miembros de una unión aduanera o acuerdo comercial (sea por exportaciones, importaciones o intercambio comercial), sobre el total de las exportaciones que el grupo de países destina a todo el mundo.
+
+
+## 5.2. Otros modelos y teorías
+
+
+### a) Modelos clásicos de equilibro general sobre el comercio
+
+Este es un modelo perteneciente a las ventajas comparativas que busca que el comercio de un país se de acuerdo a las capacidades tecnológicas que se le facilite al mismo y de esa manera diferenciar de mejor manera su participación entre los socios comerciales, este es un indicador que muestra sobre todo un ambiente sectorial.
+
+
+### b) Modelos basados en la cadena de suministro
+
+Estos modelos se enfocan en el comercio de piezas o materias primas aludiendo que los productos grandes necesitan materias de otros países para poder crearlos. Este modelo ratifica que los costos en el proceso productivo aumentan debido a que los diferentes componentes se fabrican en distintos países y tienen que pasar muchas veces las fronteras nacionales lo que causa una acumulación de costos, esto afecta al comercio ya que es mucho más barata la producción de bienes finales que los bienes complejos o tecnológicos grandes. En este caso cuanto mayor es el costo comercial, menores incentivos existen para el comercio dentro de la cadena de suministro y si el costo es muy grande solo se producirán bienes finales interrumpiendo las cadenas de valor mundiales.
+
+
+
+# 6. Especificación
+
+## 6.1. Planteamiento Teórico del Fenómeno Económico
+
+## Planteamiento del Problema
+
+Las exportaciones e importaciones han sido de gran importancia para los países desde hace siglos, permitiendo el desarrollo de los mismos y moldeando la cultura de cada región, en la actualidad esto sigue vigente; los mercados están fuertemente globalizados, las relaciones económicas con el resto del mundo son indispensables para las economías de los países y para El Salvador no es la excepción dado que nuestro país tiene una fuerte dependencia con el comercio exterior, situación que puede observarse en la balanza de pagos. Resulta de suma importancia el estudio de los ingresos recibidos en el país por medio de las relaciones económicas internacionales, por ello en nuestro estudio nos enfocamos en las exportaciones de bienes y servicios.
+
+
+En la última década las exportaciones de nuestro país han fluctuado entre el 21% y el 26% respecto al PIB; El Salvador ofrece una gran variedad de productos y servicios al resto del mundo, entre los sectores más destacados a nivel de exportación tenemos: Manufacturas diversas, agroindustria, alimentos y bebidas, y servicios. Dentro de las manufacturas tenemos que los productos de confección son el principal sector de las exportaciones salvadoreñas y entre esos productos de confección, destaca la categoría de camisetas de algodón de punto.
+
+Históricamente el principal socio comercial de El Salvador es Estados Unidos, seguido por Honduras, Guatemala, Nicaragua y Costa Rica que en conjunto demandaron el 85% del total exportado para el año 2018.
+
+Existen diversos determinantes de las exportaciones, estos pueden ser variables nacionales o extranjeras, en el presente estudio se han escogido las siguientes: aranceles, índice de precios de las exportaciones, tasa de apertura comercial, PIB per cápita e índice de producción industrial. 
+
+En virtud de lo anterior expuesto, se procede a la formulación del problema:
+
+¿El índice de precios a las exportaciones, la tasa de apertura, el PIB per cápita, la producción industrial y las importaciones de capital determinan de forma significativa el crecimiento mensual de las exportaciones de camisas de punto de algodón de El Salvador hacia Estados Unidos durante el periodo comprendido desde 2002 hasta 2017?
+
+## Hipótesis
+
+**Hipótesis General**
+
+H0: Las exportaciones de camisas de punto de algodón no son afectadas por determinantes como el índice de precios a las exportaciones, el PIB per cápita (EE. UU), las importaciones de capital, la tasa de apertura y la producción industrial durante el periodo comprendido desde 2002 hasta 2017.
+
+H1: Las exportaciones de camisas de punto de algodón son afectadas por determinantes como el índice de precios a las exportaciones, el PIB per cápita (EE. UU), las importaciones de capital, la tasa de apertura y la producción industrial durante el periodo comprendido desde 2002 hasta 2017.
+
+<div class="hipotesis">
+
+**Hipótesis Especificas:**
+
+**Tasa de Apertura Comercial**
+
+*Ho: Mientras más alta es la Tasa de Apertura comercial de Estados Unidos mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+*H1: Mientras más alta es la Tasa de Apertura comercial de Estados Unidos manor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+**PIB per Cápita de Estados Unidos**
+
+*Ho: Mientras más alto es el PIB per Cápita de Estados Unidos mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+*H1: Mientras más alto es el PIB per Cápita de Estados Unidos menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+**índice de precios a las exportaciones**
+
+*Ho: Mientras más alto es el índice de precios a las exportaciones de El salvador menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon*
+
+*H1: Mientras más alto es el índice de precios a las exportaciones de El Salvador mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+**Importaciones de Capital**
+
+*Ho: Mientras más alta son las importaciones de capital de El Salvador mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+*H1: Mientras más alta son las importaciones de capital de El Salvador menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon*
+
+**índice de producción industrial**
+
+*Ho: Mientras más alto es el índice de producción industrial de El Salvador mayor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+*H1: Mientras más alto es el índice de producción industrial de El Salvador menor es el crecimiento que presentan las exportaciones de camisas de punto de algodon.*
+
+</div>
+
 
 ## Variables endógenas y exógenas
 
 El marco en que trabajaremos las exportaciones de camisas como variable dependiente está regido por una serie de variables de principal interés ante ella que se dividen de la siguiente forma:
 
-### a) Variable endógena:
+**a) Variable endógena:**
 
 -	Exportaciones de camisas de punto de algodón de El Salvador
 
-### b) Variables Exógenas:
+**b) Variables Exógenas:**
+
 -	Índice de precios a las exportaciones de El Salvador
 -	PIB per cápita de Estados Unidos
 -	Tasa de apertura de Estados Unidos
@@ -332,11 +355,11 @@ El planteamiento del modelo se enfoca en la demanda de exportaciones de camisas 
 
 Las variables macroeconómicas establecidas para Estados Unidos nos servirán de referencia en el análisis del crecimiento de las exportaciones porque representan una de las mayores economías consumidoras de las camisas de punto de algodón de nuestro país. Seguidamente las variables de El Salvador nos darán un camino para saber si el crecimiento de las exportaciones de las camisas de punto de algodón se explica por nuestras mediciones macroeconómicas internas.
 
-Por estos motivos analizamos de manera conjunta durante un periodo de 16 años mensualmente, correspondiente a 192 observaciones de cada una. Las relaciones de los regresores respecto a nuestra variable endógena, exportaciones de camisas de punto de algodón $Xc$, está dado por la siguiente función:
+Por estos motivos analizamos de manera conjunta durante un periodo de 16 años mensualmente, correspondiente a 192 observaciones de cada una. Las relaciones esperadas de los regresores respecto a nuestra variable endógena, exportaciones de camisas de punto de algodón $Xc$, se representa por la siguiente Relación:
 
-$$ Xc=f(Mk,IPX, Ypc,T,PI)$$
+$$ Xc=f(TA^+,Ypc^+,IPX^-,Mk^+,PI^+)$$
 
-Donde el indicador respectivo para cada variable aparece listado en el parrafo siguiente junto a la relación esperada con la variable endógena:
+Donde el indicador respectivo para cada variable aparece listado en el cuadro siguiente junto a la relación esperada con la variable endógena:
 
 
 ```{r,message=F, warning=F, echo=FALSE}
@@ -354,42 +377,52 @@ Relacion <- c("Positiva", "Positiva","Negativa","Positiva","Positiva")
 
 ### UNIÓN DE VECTORES Y DATA FRAME ###
 Relaciones.Union <- cbind(Variable,Definicion,Relacion) %>% as.data.frame()
-Tabla.Variables <- flextable(data = Relaciones.Union,
-                             col_keys = c("Variable", 
-                                          "Definicion", 
-                                          "Relacion"))
-### ESTETICA DE LA TABLA ###
-
-
-Tabla.Variables %>% 
-  width(width = 5) %>% 
-  align_text_col(align =  "justify", header =  TRUE , footer =  TRUE ) %>% 
-  bold(bold = TRUE, part = "header") %>% 
-  align (align =  "center" , part =  "header") %>% 
-  align (align =  "center" , part =  "body" ) %>% 
-  bg (i =  1 , bg = "#eb6864", part =  "header") %>% 
-  color (i = 1, color = "#ffffff", part =  "header" )
+Relaciones.Union %>%
+  kbl(align = c("lc"), caption = "Relación Esperada de los regresores") %>% 
+  row_spec(0,bold = T, color = 'white', background = 'black') %>% 
+  kable_classic(full_width = F, html_font = "Arial", font_size = 18)
 
 ```
 
-## Especificación del modelo matemático y estadístico
 
-### Modelo matemático
+## 6.2. Especificación del modelo matemático y estadístico
 
-$$Xc=T+Ypc+Mk+PI-IPX$$
+### Especificación del Modelo matemático
+
+El modelo matemático debe seguir las relaciones ya dadas en la tabla anterior, es por ello que podemos construir una ecuación formal para las exportaciones de punto de algodón. Para la creación del modelo se procede al uso de la formula de regresión Lineal Múltiple por lo que el modelo Matemático se presenta de la forma siguiente:
+
+
+$$Xc = β0 + β 1T + β2Ypc + β3IPX + β4Mk + β5IPX$$
+
+Donde $Xc$ corresponde al valor predicho de las exportaciones de camisas de punto de algodón. La intercepción del modelo está dada por $β0$ y los elementos $β1$, $β2$, $β3$, $β4$, $β5$ corresponden a los coeficientes de regresión parcial de $TA$, $Ypc$, $IPX$, $Mk$ y $PI$ respectivamente.
+
+El coeficiente $β1$ es el cambio en el valor de las exportaciones de camisas de punto de algodón por unidad de cambio en la tasa de apertura mientras El PIB per cápita, el Índice de precios a las exportaciones, las importaciones de capital y el índice de producción industrial permanecen constantes.
+
+El coeficiente $β2$ es el cambio en el valor de las exportaciones de camisas de punto de algodón por unidad de cambio en el PIB per cápita mientras la Tasa de Apertura, el Índice de precios a las exportaciones, las importaciones de capital y el índice de producción Industrial permanecen constantes.
+
+El coeficiente $β3$ es el cambio en el valor de las exportaciones de camisas de punto de algodón por unidad de cambio en el Índice de precios a las Exportaciones mientras la Tasa de Apertura, el PIB per cápita, las importaciones de capital y la producción industrial permanecen constantes.
+
+El coeficiente $β4$ es el cambio en el valor de las exportaciones de camisas de punto de algodón por unidad de cambio en las importaciones de capital mientras la Tasa de Apertura, el PIB per cápita, el Índice de Precios a las Exportaciones y la producción industrial permanecen constantes.
+
+El coeficiente $β5$ es el cambio en el valor de las exportaciones de camisas de punto de algodón por unidad de cambio en el índice de producción industrial mientras la Tasa de Apertura, el PIB per cápita, el Índice de Precios a las Exportaciones y las importaciones de capital permanecen constantes.
+
+Con este modelo y las relaciones planteadas se observa que a exepción de el indice de precios a las exportaciones las demás regresoras forman una sumatoria de relaciones positivas por lo que se espera que el aumento o disminución de la Tasa de Apertura, El PIB per cápita, las importaciones de capital y el índice de producción indutrial causen un aumento o disminución en las exportaciones de camisas de punto de algodón. aun así el modelo esta incompleto pues ignoramos las variaciones en la estimación y por ello es necesario incluir cierto grado de error en el modelo.
+
 
 ### Modelo estadístico
 
-Debido a que el modelo matemático puede no incluir otras variables que explican el fenómeno, ni las posibles imperfecciones en la relación funcional, esta investigación esta propensa a tener variabilidad respecto a los resultados esperados tal motivo lleva a que se agregue un grado de error a la ecuación representado por $ϵ$, relacionado de la siguinte forma:
+Debido a que el modelo matemático puede no incluir otras variables que explican el fenómeno, ni las posibles imperfecciones en la relación funcional, esta investigación esta propensa a tener variabilidad respecto a los resultados esperados, tal motivo lleva a que se agregue un grado de error a la ecuación representado por $ϵ$, relacionado de la siguinte forma:
 
-$$ Xc=T+Ypc+Mk+PI-IPX+ϵ$$
+$$Xc = β0 + β 1T + β2Ypc + β3IPX + β4Mk + β5IPX + ϵ$$
+
+Donde $β$ son los coeficientes que miden la sensibilidad del cambio en la variable dependiente respecto a las regresoras y el elemento $ϵ$ es el termino residual o error del modelo que mide cuanta variación hay en la estimación de las exportaciones de camisas de punto de algodón.
+
+La estimación del modelo se replicara en breve.
 
 
-\newpage
+## 6.3. Evidencia Empírica del Fenómeno Económico
 
-
-# 9. Evidencia Empírica del Fenómeno Económico
-
+La evidencia parte de datos obtenidos por las instituciones pertinentes y se muestran un total de 192 observaciones que corresponden al periodo de 2002 al 2017.
 
 ```{r, message=F,warning=F}
 library(dplyr)
@@ -399,12 +432,26 @@ Data_Trabajo <- as.data.frame(Data_Trabajo)
 dplyr::glimpse(Data_Trabajo)
 ```
 
+
+```{r, message=F, warning=F, echo=FALSE}
+library(flextable)
+tabla.datos <- flextable(head(Data_Trabajo, n=10))%>% width(width = 2)
+
+header.datos.tabla <- add_header_lines (tabla.datos, values =  "Tabla 1: Marco de Datos con las primeras 10 observaciones")
+add_footer_lines(header.datos.tabla,top = TRUE, values = "Fuente: Elaboración propia en base a BEA, BCR, BD Nomics-FMI, DataWeb, FRED.")
+```
+
 \newpage
 
 
-# 10. Pruebas de Normalización
+# 7. Estimación
+
 
 ```{r, echo=F, warning=F,message=F}
+
+
+#### CARGAR LAS LIBRERÍAS NCESARIAS ###
+
 library(dplyr)
 library(stargazer)
 library(fitdistrplus) ### Distribución Normal
@@ -412,12 +459,16 @@ library(normtest) ### Prueba de JARQUE-BERA
 library(nortest) ### Kolmogorov-Smirnov
 library(psych) ### Prueba de Farrar (Bartlett)
 library(car) ### VIF
-library(mctest) ### vif
+library(mctest) ### VIF
 ```
 
-## 10.1. Estimación del Modelo
+
+
+
+## 7.1. Estimación del Modelo
 
 ```{r,warning=F,message=F}
+library(stargazer)
 options(scipen = 999999)
 Ecuacion_Modelo <- lm(formula = Xc~ TA + Ypc + 
                         IPX + Mk + PI, data = Data_Trabajo)
@@ -428,51 +479,84 @@ stargazer(Ecuacion_Modelo,
 ```
 
 
-## 10.2. Pruebas de Distribución Normal
+# 8. Verificación de supuestos del MCRLM
 
-```{r}
+En esta etapa ya se tiene la estimación del modelo por eso es necesario revisar si cumple con los requisitos y supuestos de Modelo de Regresión Lineal Múltiple
+ 
+
+## 8.1. Pruebas de Distribución Normal
+
+Una distribución normal dentro de otras propiedades podemos resaltar dos y es que la distribución es simétrica (está asociado con el tercer momento alrededor de la media), la diferencia entre la simetría y el valor esperado que nosotros tenemos de los residuos se asume que sea cero, también se asume que la curtosis (está relacionada con el cuarto momento alrededor de la media) y el valor absoluto sean igual a tres por lo que su diferencia debe ser aproximadamente cero.
+
+```{r, message=FALSE, warning=FALSE}
 Fit_Normal <- fitdist(data = Ecuacion_Modelo$residuals,distr = "norm")
 plot(Fit_Normal)
 summary(Fit_Normal)
 ```
 
-Mediante las gráfica Q-Q Plot se observa que el valor residual observado es similar al valor residual obtenido. los datos muestran ajuste a la línea de 45 grados se concluye entonces que los datos presentan una ditibución normal.
+**Conclusión de la prueba:**
 
-Por su parte el gráfico P-P Plot tiene una probabilidad observada cercana a la probabilidad obtenido.Los datos tambien muestran una distribución cercana a la normal.
+> *Mediante las gráfica Q-Q Plot se observa que el valor residual observado es similar al valor residual obtenido. los datos muestran ajuste a la línea de 45 grados se concluye entonces que los datos presentan una ditibución normal.*
 
-## 10.3. Prueba de Jarque Bera
+> *Por su parte el gráfico P-P Plot tiene una probabilidad observada cercana a la probabilidad obtenido. Los datos tambien muestran una distribución cercana a la normal.*
+
+### Prueba de Jarque Bera
+
+La prueba de normalidad de Jarque Bera es una prueba asintótica, o de muestras grandes. También se basa en los residuos de Minimos Cuadrado Ordinarios. Esta prueba calcula primero la asimetría y la curtosis de los residuos de Mínimos Cuadrados Ordinarios.
 
 ```{r}
 jb.norm.test(Ecuacion_Modelo$residuals)
 ```
 
-Tomando en cuenta que el nivel de significancia es del 5% y el P-value aproximadamente de 0% existe evidencia en favor de rechazar la hipotesis nula. Por lo tanto, los residuos del modelo no siguen una distrubución normal con media cero y varianza constante.
+**Verificación de la Hipótesis de la prueba:**
+
+> *Tomando en cuenta que el nivel de significancia es del 5% y el P-value aproximadamente de 0% existe evidencia en favor de rechazar la hipotesis nula. Por lo tanto, los residuos del modelo no siguen una distribución normal con media cero y varianza constante.*
 
 
-## 10.4. Prueba de Kolmogorov-Smirnov
+### Prueba de Kolmogorov-Smirnov
+
+Es una prueba general para verificar si una variable sigue una determinada distribución de probabilidad, de tal forma que permite verificar la hipótesis de normalidad. De manera formal esta prueba mide la distancia máxima esperada entre la distribución teórica y la distribución empirica para muestras mayores a 50 observaciones.
+
 
 ```{r}
 lillie.test(Ecuacion_Modelo$residuals)
 ```
 
-Esta prueba mide la distancia máxima esperada entre la distribución teórica y la distribución empirica para muestras mayores a 50 observaciones.
+**Verificación de la Hipótesis de la prueba:**
 
-Mediante la prueba KS existe evidencia en favor de no rechazar la Hipótesis Nula. Por lo tanto los residuos del modelo siguen una distribución normal con media cero y varianza constante.
+> *Mediante la prueba KS existe evidencia en favor de no rechazar la Hipótesis Nula. Por lo tanto los residuos del modelo siguen una distribución normal con media cero y varianza constante.*
 
 
-## 10.5. Prueba de Shapiro Wilk
+### Prueba de Shapiro Wilk
+
+Esta prueba está diseñada específicamente para realizar el contraste de normalidad para una variable, también es una prueba específica para verificar la normalidad. Trata de verificar si la pendiente de la regresión del cuartil teórico y el cuartil empírico es igual a uno. La prueba de normalidad de Shapiro-Wilk es aplicable cuando se analizan muestras compuestas por menos de 50 elementos (muestras pequeñas)
+
+El test de Shapiro-Wilk plantea la hipótesis nula que una muestra proviene de una distribución normal. Elegimos un nivel de significancia, por ejemplo 0,05, y tenemos una hipótesis alternativa que sostiene que la distribución no es normal.
+Tenemos:
+
++ *H0: La distribución es normal*
+
++ *H1: La distribución no es normal*
+
 
 ```{r}
 shapiro.test(Ecuacion_Modelo$residuals)
 ```
 
-Esta prueba trata de verificar si la pendiente de la regresión del cuartil teórico y el cuartil empírico es igual a uno.
+**Verificación de la Hipótesis de la prueba:**
 
-Debido a que P-value es menor al nivel de significancia  del 5% existe evidencia en favor de rechazar la hipótesis nula. Por lo tanto, los residuos del modelo no siguen una distrubución normal con media cero y varianza constante.
+> *Debido a que P-value es menor al nivel de significancia  del 5% existe evidencia en favor de rechazar la hipótesis nula. Por lo tanto, los residuos del modelo no siguen una distrubución normal con media cero y varianza constante.*
 
-# 11. Pruebas de Multicolinealidad
+## 8.2. Pruebas de Multicolinealidad
 
-## 11.1. Calculos Previos
+Una de las hipótesis del modelo de regresión lineal múltiple establece que no existe relación lineal exacta entre los regresores, o, en otras palabras, establece que no existe multicolinealidad perfecta en el modelo. Esta hipótesis es necesaria para el cálculo del vector de estimadores mínimo cuadráticos, ya que en caso contrario la matriz X'X será no singular. La multicolinealidad perfecta no se suele presentar en la práctica, salvo que se diseñe mal el modelo como veremos en el epígrafe siguiente. En cambio, sí es frecuente que entre los regresores exista una relación aproximadamente lineal, en cuyo caso los estimadores que se obtengan serán en general poco precisos, aunque siguen conservando la propiedad de lineales, insesgados y óptimos.
+
+En otras palabras, la relación entre regresores hace que sea difícil cuantificar con precisión el efecto que cada regresor ejerce sobre el regresando, lo que determina que las varianzas de los estimadores sean elevadas. Cuando se presenta una relación aproximadamente lineal entre los regresores, se dice que existe multicolinealidad no perfecta.
+
+Es importante señalar que el problema de multicolinealidad, en mayor o menor grado, se plantea porque no existe información suficiente para conseguir una estimación precisa de los parámetros del modelo. El problema de la multicolinealidad hace referencia, en concreto, a la existencia de relaciones aproximadamente lineales entre los regresores del modelo, cuando los estimadores obtenidos y la precisión de éstos se ven seriamente afectados. 
+
+
+### Calculos Previos
 
 *Sigma Matriz*
 
@@ -495,26 +579,49 @@ XX.Normalizada <- (Sn%*%Matriz.XX)%*%Sn %>% print()
 Lambdas <- eigen(XX.Normalizada, symmetric = T)
 stargazer(Lambdas$values, type = "text")
 ```
-## 11.2. Indice de Condicion 
+
+
+
+### Indice de Condicion 
+
+El Indice de Condicion mide la sensibilidad de las estimaciones mínimo cuadráticas ante pequeños cambios en los datos. Para evitar sego escalar de las variables la matriz $X^TX$ debe ser normalizada, por tanto el número de condición  k(x) es igual a la matriz cuadrada de la razón entre la raiz caracteristica mas grande (𝝀 max) y la raiz cuadrada mas pequeña (𝝀 min) de la matriz X`X, normalizada.
+
++ si k(x) es inferior a 20, la multicolinealidad es leve,no se considera un problema.
++ Para 20 < k(x) < 30 , la multicolinealidad se considera moderada.
++ En el caso de que k(x) ≥ 30 , la multicolinealidad es severa.
 
 ```{r}
 K <- sqrt(max(Lambdas$values)/min(Lambdas$values)) %>% print()
 ```
 
-El indice de condición mide la variación de los resultados ante una cambio en los datos. En las observaciones del modelo el índice de condición es de 167.85 por lo que sufre de una multicolinealidad severa, un cambio leve en un regresor tenderá a generar variaciones grandes en las demás variables.
+**Conclusión de la Prueba:**
 
-## 11.3. Prueba de Farrar Glaubar (Bartlett)
+> *En las observaciones del modelo el índice de condición es de 167.85 por lo que sufre de una multicolinealidad severa, un cambio leve en un regresor tenderá a generar variaciones grandes en las demás variables.*
+
+### Prueba de Farrar Glaubar (Bartlett)
+
+Esta prueba identifica si a nivel poblacional, los regresores del modelo presentan independencia estadística a través de la matriz de la matriz de correlación muestral R , y se verifica si a nivel poblacional dicha matriz de correlación corresponde a una matriz identidad I, las hipótesis de la prueba son las siguientes:
+
++ *Hipótesis Nula: R es aproximadamente igual a la matriz I*
++ *Hipótesis Alternativa: R no es aproximadamente igual a la matriz I*
+
 
 ```{r, message=F, warning=F}
 fg_test <- cortest.bartlett(Matriz.X[,-1])
 print(fg_test)
 ```
 
-Esta prueba identifica si a nivel poblacional los regresores del modelo ppresentan independencia estadística, a trávez de la matriz de correlación muestral y se verifica si a nivel poblacional dicha matriz de correlación corresponde a una matriz identidad.
+**Verificación de la Hipótesis de la prueba:**
 
-Debido a que el P-ese es menor al nivel de significancia existe evidencia para rechzar la hipotesis nula, por lo que la que la matriz de correlación de las variables exogenas no es poblacionalmente una matriz identidad, es decir, si hay relación entre las variables explicativas.
+> *Debido a que el P-value es menor al nivel de significancia existe evidencia para rechzar la hipotesis nula, por lo que la que la matriz de correlación de las variables exogenas no es poblacionalmente una matriz identidad, es decir, si hay relación entre las variables explicativas.*
 
-## 11.4. Factores Inflacionarios de la Varianza
+### Factores Inflacionarios de la Varianza
+
+Una segunda alternativa para detectar multicolinealidad es utilizar el factor de inflación de la varianza FIV (VIF) , el cual cuantifica si para cada término del modelo es confiable su estimación. 
+
+Así, pues, el VIF  es la razón entre la varianza observada y la que habría sido en caso de que Xj estuviera incorrelacionada con el resto de regresores del modelo. Dicho de otra forma, el FIV muestra en qué medida se «agranda» la varianza del estimador como consecuencia de la no ortogonalidad de los regresores. Algunos autores consideran que existe un problema grave de multicolinealidad cuando el FIV de algún coeficiente es mayor de 10, es decir, cuando el 2 Rj >0,90.
+ 
+En este caso consideramos que el FIV de los coeficientes deben ser menores que 5 para que carezca de multicolinealidad
 
 ```{r}
 vifs_car <- vif(Ecuacion_Modelo)
@@ -522,13 +629,18 @@ print(vifs_car)
 mc.plot(mod = Ecuacion_Modelo,vif = 3)
 ```
 
+**Conclusión de la prueba:**
 
+> *Se puede observar que las variables del modelo sufren de multicolinealidad. Los valores más bajo corresponden a la Tasa de Apertura y las importaciones de capital mientras que los valores más altos corresponden al índice de precios de las exportaciones, el PIB per Cápital de EE.UU y el más alto la producción industrial.*
 
-# 12. Preuba de Heterocedasticidad
+## 8.3. Preuba de Heterocedasticidad
 
+La heterocedasticidad es, en estadística, cuando los errores no son constantes a lo largo de toda la muestra. El término es contrario a homocedasticidad.
+En otras palabras, en los modelos de regresión lineales se dice que hay heterocedasticidad cuando la varianza de los errores no es igual en todas las observaciones realizadas. Así, no se cumple uno de los requisitos básicos de las hipótesis de los modelos lineales. [@jorge_2021]
+### Prueba de White
 
+El contraste de White para la heterocedasticidad implica contrastar los residuos cuadráticos de Mínimos Cuadrados Ordinarios (MCO) sobre los valores ajustados de MCO y sobre los cuadrados de los valores ajustados. El contraste de White nos permite comprobar la presencia de heterocedasticidad (el error, u, condicional sobre las variables explicativas varía en la población). Este contraste unifica en una sola ecuación los cuadrados y los productos cruzados de todas las variables independientes de la regresión. [@rodo_2021]
 
-## 12.1. Prueba de White
 
 ```{r, message=F, warning=F}
 library(lmtest)
@@ -540,21 +652,38 @@ Prueba.White <- bptest(Ecuacion_Modelo,
 print(Prueba.White)
 ```
 
-Hay evidencia a favor de rechazar la hipotesis nula, se concluye entonces que la varianza de los residuos es heterocedastica.
+**Verificación de la Hipótesis de la prueba:**
 
-# 13. Pruebas de Autocorrelación
+> *Debido a que el P-value es menor al nivel de significancia se deduce que hay evidencia a favor de rechazar la hipotesis nula, se concluye entonces que la varianza de los residuos es heterocedastica.*
 
+## 8.4. Pruebas de Autocorrelación
 
-## 13.1 Autocorrelación de Primer Orden: Prueba de Durbin-Watson
+En el modelo de regresión lineal tenemos, entre otros, el supuesto de la no autocorrelación de entre las perturbaciones. La autocorrelación hace referencia a la correlación (asociación) existente entre los elementos de una serie de observaciones ordenadas en el tiempo o el espacio. La naturaleza de los datos, la especificación del modelo o la presencia de variables endógenas retardadas constituyen algunas de las causas que pueden dar origen a este problema. (Gujarati & Porter, 2010) Cuando existe el problema de autocorrelación la matriz de varianzas covarianzas del término de perturbación aleatoria deja de ser escalar, por ello los estimadores mínimos cuadráticos dejan de ser eficientes, de ahí surge la necesidad de realizar la prueba de autocorrelación.
+
+### Autocorrelación de Primer Orden: Prueba de Durbin-Watson
+
+Es la prueba más conocida para detectar correlación serial de primer orden, el estadístico Durbin-Watson se define como la razón de la suma de las diferencias al cuadrado de residuos sucesivos sobre la SCR. El estadístico DW se encuentra entre 0 y 4, mientras más cercano a dos (ρ = 0) el modelo estaría libre de correlación, si el estadístico es menor que dos podemos decir que existe correlación positiva y si es mayor que dos correlación negativa (ρ ≠ 0).
+
++ *Ho: ρ = 0 “No hay evidencia de autocorrelación de primer orden en los residuos del modelo”*
+
++ *H1: ρ ≠ 0 “Hay evidencia de autocorrelación de primer orden en los residuos del modelo”*
 
 ```{r, message=F, warning=F}
 library(lmtest)
-dwtest(Ecuacion_Modelo, alternative = "two.sided", iterations=1000)
+dwtest(Ecuacion_Modelo, alternative = "two.sided", iterations=10000)
 ```
 
-Como el P-value es menor al nivel de significancia del 5% Se rechaza la hipótesis nula. Por lo tanto, hay evidencia de autocorrelación de primer orden en los residuos del modelo.
+**Verificación de la Hipótesis de la prueba:**
 
-## 13.2. Autocorrelación de Orden superior: Prueba del multiplicador de Lagrange (Breusch-Godfrey)
+> *Como el P-value es menor al nivel de significancia del 5% Se rechaza la hipótesis nula. Por lo tanto, hay evidencia de autocorrelación de primer orden en los residuos del modelo.*
+
+### Autocorrelación de Orden superior: Prueba del multiplicador de Lagrange (Breusch-Godfrey)
+
+La prueba de Breusch-Godfrey se utiliza para la detección de correlación de orden superior, consiste en estimar una regresión auxiliar con MCO y en hacer un contraste sobre los parámetros de esta regresión.
+
++ *Ho: ρ1 = ρ2 = ρ3 = ρm = 0 “No hay evidencia de autocorrelación de orden “m” en los residuos del modelo”*
+
++ *H1: ρ1 = ρ2 = ρ3 = ρm ≠ 0 “Hay evidencia de autocorrelación de orden “m” en los residuos del modelo”*
 
 ```{r}
 library(lmtest)
@@ -562,36 +691,13 @@ options(scipen = 9999)
 bgtest(Ecuacion_Modelo,order = 2)
 ```
 
-Como el P-value es menor al nivel de significancia del 5% Se rechaza la hipótesis nula. Por lo tanto, hay evidencia de autocorrelación de segundo orden en los residuos del modelo.
+**Verificación de la Hipótesis de la prueba:**
+
+> *Como el P-value es menor al nivel de significancia del 5% Se rechaza la hipótesis nula. Por lo tanto, hay evidencia de autocorrelación de segundo orden en los residuos del modelo.*
 
 \newpage
 
-
-# 14. Bibliografía
-
-Analysis, B. o. (2021). Data by Topic. Retrieved from https://www.bea.gov/data/gdp
-
-Analysis, B. o. (2021). Data by Topic. Obtenido de https://www.bea.gov/data/gdp
-
-Banco Central de Reserva de El Salvador. (2021, Marzo). Indices del Sector Externo. Retrieved from https://www.bcr.gob.sv/bcrsite/?cdr=41
-
-BD.Nomics. (Abril de 2021). International Financial Statistics. Obtenido de https://db.nomics.world/IMF/IFS
-
-Browning, D. (1998). El Salvador, La Tierra y el hombre (Vol. Cuarta Edición). San Salvador: CONCULTURA.
-
-Carmona, L. R. (2006). CAFTA-AR agricultura y soberanía alimentaria. San Salvador.
-
-Fuentes, H. L. (2002). La economía de El Salvador en el siglo XIX (Vol. Primera Edición). San Salvador: Dirección de Publicaciones e Impresos, Consejo Nacional para la Cultura y el Arte.
-
-Timossi, G. (1989). Deuda Externa y Ajuste Extructura. CRIES.
-
-IBM Cloud Education. (2020, Agosto 25). Análisis exploratorio de datos. Retrieved from https://www.ibm.com/cloud/learn/exploratory-data-analysis
-
-Unidos, C. d. (2020). DataWeb. Obtenido de https://dataweb.usitc.gov/login?return=%2Ftrade
-
-https://juba.github.io/rmdformats/
-
-# 15. Anexos
+# 9. Anexos
 
 ## a) R Data
 
@@ -599,19 +705,31 @@ https://juba.github.io/rmdformats/
 save.image("../Data_Trabajo.RData")
 ```
 
-## b) Nombres de Archivos:
-
 <div class="archivos">
+
+## b) Nombres de Archivos:
 
 + **Data_Trabajo.xlsx :** Archivo excel que contiene todos los datos utilizados en el analisis.
 
-+ **Primer.Avance.Grupo.06.Rmd :** El codigo R-Markdown donde se realizo el trabajo.
++ **Trabajo.Grupo.3.6.Rmd :** El codigo R-Markdown donde se realizo el trabajo.
 
-+ **Primer.Avance.Grupo.06.pdf :** Archivo virtual en formato PDF correspondiente al R-Markdown
++ **Trabajo.Grupo.3.6.pdf :** Archivo virtual en formato PDF correspondiente al R-Markdown
 
-+ **Primer.Avance.Grupo.06.html :** Archivo web correspondiente al R-Markdown
++ **Trabajo.Grupo.3.6.html :** Archivo web correspondiente al R-Markdown
 
 + **Data_Trabajo.RData :** Enviroment que incluye todos los objetos generados durante la investigación.
 
 </div>
+
+# 10. Referencias
+
+Dietrichson, Aleksander . (2019). Metodos Cuantitativos. https://bookdown.org/dietrichson/metodos-cuantitativos/ 
+
+Parada, Fernando. (2019). PRUEBA DE NORMALIDAD DE SHAPIRO-WILK. https://www.rpubs.com/F3rnando/507482 
+
+Universidad de Valencia. (s.f.). Multicolinealidad. https://www.um.es/econometria/adeydcho/transpar/06-multicolinealidad.pdf
+
+Guerrero, Sara. Melo, Oscar. (2017). Una metodología para el tratamiento de la multicolinealidad a través del escalamiento multidimensional. http://www.scielo.org.co/pdf/cide/v8n2/0121-7488-cide-8-02-00009.pdf 
+
+Pérez, Ademir. (2019). Multicolinealidad. https://www.rpubs.com/ca_ademir/colinealidad 
 

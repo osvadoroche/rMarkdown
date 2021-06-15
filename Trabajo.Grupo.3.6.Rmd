@@ -19,6 +19,8 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 
 ```{css, echo = FALSE}
 
+### Por estilos según normas APA ###
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #fefefe;
@@ -75,13 +77,20 @@ div.hipotesis p, div.archivos{
     text-indent:0px;
 }
 
+div.portada h1{
+  line-height: 1;
+}
+
+
 ```
 
+<div class="portada">
 
 # Universidad de El Salvador 
 # Facultad de Ciencias Económicas
 # Escuela de Economía
 
+</div>
 
 <center>
 ![](https://www.ues.edu.sv/storage/app/media/minerva2.png){width=15%}
@@ -93,7 +102,7 @@ div.hipotesis p, div.archivos{
 
 # Docente
 
-#### Carlos Ademir Perez Alas
+#### Carlos Ademir Pérez Alas
 
 # Materia
 
@@ -123,7 +132,6 @@ Integrantes %>%
 
 
 \newpage
-
 
 
 # 1. Introducción
@@ -193,7 +201,7 @@ Empezando la década de los 80 's el sector primario empezó a disminuir conside
 
 ### Exportaciones 
 
-Las exportaciones son los bienes y servicios producidos en un país y comprados por residentes de otro país. No importa cuál sea el bien o el servicio. No importa cómo se envíe. Puede enviarse, enviarse por correo electrónico o transportarse en el equipaje personal en un avión. Si se produce en el país y se vende a alguien en un país extranjero, es una exportación.
+Las exportaciones son los bienes y servicios producidos en un país y comprados por residentes de otro país. No importa cuál sea el bien o el servicio. No importa cómo se envíe. Puede enviarse por correo electrónico o transportarse en el equipaje personal en un avión. Si se produce en el país y se vende a alguien en un país extranjero, es una exportación.
 
 ### Aranceles:
 
@@ -229,7 +237,7 @@ EDA se utiliza principalmente para ver qué datos pueden revelar más allá del 
 
 # 5. Marco referencial
 
-## 5.1. Estudios de las Exportaciones de El salvador
+## 5.1. Estudios de las Exportaciones de El Salvador
 
 Las exportaciones son el principal comienzo de las empresas para lograr hacer negocios internacionales. Las empresas que deciden salir a los mercados mundiales lo hacen principalmente para lograr expandir su producto y sus niveles de ingresos, así como también para diversificar sus sedes de ventas. Las exportaciones se pueden definir brevemente como el envío legal de productos hacia un destino fuera de las fronteras nacionales para uso o consumo.
 Desde un punto de vista macroeconómico es de mucha utilidad medir los niveles de exportaciones de un país. 
@@ -502,7 +510,7 @@ summary(Fit_Normal)
 
 ### Prueba de Jarque Bera
 
-La prueba de normalidad de Jarque Bera es una prueba asintótica, o de muestras grandes. También se basa en los residuos de Minimos Cuadrado Ordinarios. Esta prueba calcula primero la asimetría y la curtosis de los residuos de Mínimos Cuadrados Ordinarios.
+La prueba de normalidad de Jarque Bera es una prueba asintótica, o de muestras grandes. También se basa en los residuos de Minimos Cuadrado Ordinarios. Esta prueba calcula primero la asimetría y la curtosis de los residuos de Mínimos Cuadrados Ordinarios.[@gujarati2010econometria]
 
 ```{r}
 jb.norm.test(Ecuacion_Modelo$residuals)
@@ -637,6 +645,7 @@ mc.plot(mod = Ecuacion_Modelo,vif = 3)
 
 La heterocedasticidad es, en estadística, cuando los errores no son constantes a lo largo de toda la muestra. El término es contrario a homocedasticidad.
 En otras palabras, en los modelos de regresión lineales se dice que hay heterocedasticidad cuando la varianza de los errores no es igual en todas las observaciones realizadas. Así, no se cumple uno de los requisitos básicos de las hipótesis de los modelos lineales. [@jorge_2021]
+
 ### Prueba de White
 
 El contraste de White para la heterocedasticidad implica contrastar los residuos cuadráticos de Mínimos Cuadrados Ordinarios (MCO) sobre los valores ajustados de MCO y sobre los cuadrados de los valores ajustados. El contraste de White nos permite comprobar la presencia de heterocedasticidad (el error, u, condicional sobre las variables explicativas varía en la población). Este contraste unifica en una sola ecuación los cuadrados y los productos cruzados de todas las variables independientes de la regresión. [@rodo_2021]
@@ -719,17 +728,37 @@ save.image("../Data_Trabajo.RData")
 
 + **Data_Trabajo.RData :** Enviroment que incluye todos los objetos generados durante la investigación.
 
++ **Bibliografia.bib:** Bibliografía Bibtex del ducumento
+
++ **apa.csl.txt:** Formato de bibliografía
+
 </div>
 
 # 10. Referencias
 
+BCR. (2021). Banco Central de Reserva de El Salvador -. Bcr.gob.sv. https://www.bcr.gob.sv/bcrsite/?cat=1000&lang=es
+
+
+DataWeb. (2021). Usitc.gov; USITC DataWeb. https://dataweb.usitc.gov/login?return=%2Ftrade
+
+
+DBnomics. (2021). International Financial Statistics (IFS). DBnomics – the World’s Economic Database; International Monetary Fund. https://db.nomics.world/IMF/IFS
+
+
 Dietrichson, Aleksander . (2019). Metodos Cuantitativos. https://bookdown.org/dietrichson/metodos-cuantitativos/ 
+
+
+FRED. (2021). Stlouisfed.org; Federal Reserve Bank of St. Louis. https://fred.stlouisfed.org/categories
+
 
 Parada, Fernando. (2019). PRUEBA DE NORMALIDAD DE SHAPIRO-WILK. https://www.rpubs.com/F3rnando/507482 
 
+
 Universidad de Valencia. (s.f.). Multicolinealidad. https://www.um.es/econometria/adeydcho/transpar/06-multicolinealidad.pdf
 
+
 Guerrero, Sara. Melo, Oscar. (2017). Una metodología para el tratamiento de la multicolinealidad a través del escalamiento multidimensional. http://www.scielo.org.co/pdf/cide/v8n2/0121-7488-cide-8-02-00009.pdf 
+
 
 Pérez, Ademir. (2019). Multicolinealidad. https://www.rpubs.com/ca_ademir/colinealidad 
 
